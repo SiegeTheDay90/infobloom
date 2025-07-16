@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>InfoBloom</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    .auth-form {
+      display: none;
+    }
+    .auth-form.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="container mt-5">
+
+  <h1 class="mb-4">InfoBloom</h1>
+
+  <!-- Toggle Buttons -->
+  <div class="btn-group mb-4" role="group">
+    <button id="showSignIn" class="btn btn-outline-primary active">Sign In</button>
+    <button id="showSignUp" class="btn btn-outline-primary">Sign Up</button>
+    <button id="showReset" class="btn btn-outline-primary">Reset Password</button>
+    <button id="showDelete" class="btn btn-outline-danger">Delete Account</button>
+  </div>
+
+  <!-- Sign In Form -->
+  <form id="signInForm" class="auth-form active">
+    <h3>Sign In</h3>
+    <div class="mb-3">
+      <label>Email</label>
+      <input class="form-control" type="email" id="signInEmail" required />
+    </div>
+    <div class="mb-3">
+      <label>Password</label>
+      <input class="form-control" type="password" id="signInPassword" required />
+    </div>
+    <input class="btn btn-primary" type="submit" value="Sign In" />
+  </form>
+
+  <!-- Sign Up Form -->
+  <form id="signUpForm" class="auth-form">
+    <h3>Sign Up</h3>
+    <div class="mb-3">
+      <label>Email</label>
+      <input class="form-control" type="email" id="signUpEmail" required />
+    </div>
+    <div class="mb-3">
+      <label>Password</label>
+      <input class="form-control" type="password" id="signUpPassword" required />
+    </div>
+    <input class="btn btn-success" type="submit" value="Create Account" />
+  </form>
+
+  <!-- Password Reset Form -->
+  <form id="resetForm" class="auth-form">
+    <h3>Reset Password</h3>
+    <div class="mb-3">
+      <label>Email</label>
+      <input class="form-control" type="email" id="resetEmail" required />
+    </div>
+    <input class="btn btn-warning" type="submit" value="Send Reset Link" />
+  </form>
+
+  <!-- Delete Account -->
+  <form id="deleteForm" class="auth-form">
+    <h3>Delete Account</h3>
+    <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" type="email" id="deleteEmail" required />
+      </div>
+      <div class="mb-3">
+        <label>Password</label>
+        <input class="form-control" type="password" id="deletePassword" required />
+      </div>
+    <input type="submit" class="btn btn-danger" value="Delete" />
+  </form>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>

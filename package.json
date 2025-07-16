@@ -1,0 +1,22 @@
+{
+  "name": "infobloom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "npx webpack --mode=production",
+    "build": "npx webpack --mode=development",
+    "watch": "npx webpack -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "devDependencies": {
+    "webpack": "^5.100.2",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "firebase": "^11.10.0"
+  }
+}
