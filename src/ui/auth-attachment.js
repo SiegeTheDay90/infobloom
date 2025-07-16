@@ -93,8 +93,9 @@ deleteForm.onsubmit = async (e) => {
 
 
 // Handle Sign Out
-const signOutForm = document.getElementById("signOutForm");
+const signOutForm = document.getElementById("signOutForm") || {};
 signOutForm.onsubmit = async (e) => {
+  console.log("Sign Out clicked")
   e.preventDefault();
   try {
     await auth.signOutUser();
@@ -103,3 +104,16 @@ signOutForm.onsubmit = async (e) => {
     alert("Sign-out error: " + err.message);
   }
 };
+
+// Handle Google
+const googleBtn = document.getElementById("googleSignIn");
+if (googleBtn) {
+  googleBtn.onclick = async () => {
+    try {
+      await auth.signInWithGoogle(); // assuming you’ve exported this function
+      // Note: if using `signInWithRedirect`, you may not reach this point immediately.
+    } catch (err) {
+      alert("Google Sign-In error: " + err.message);
+    }
+  };
+}
