@@ -1,4 +1,4 @@
-import * as auth from "../firebase/firebaseFuncs.js";
+import * as auth from "../firebase/authFunctions.js";
 
 // Toggle Forms
 const forms = {
@@ -41,7 +41,8 @@ signInForm.onsubmit = async (e) => {
   const email = document.getElementById("signInEmail").value;
   const password = document.getElementById("signInPassword").value;
   try {
-    const result = await auth.signIn(email, password);
+    const userProfile = await auth.signIn(email, password);
+    sessionStorage.setItem("userProfile_IB", JSON.stringify(userProfile));
     window.location.replace("./index.html");
   } catch (err) {
     alert("Sign-in error: " + err.message);
@@ -54,8 +55,13 @@ signUpForm.onsubmit = async (e) => {
   e.preventDefault();
   const email = document.getElementById("signUpEmail").value;
   const password = document.getElementById("signUpPassword").value;
+  const firstName = document.getElementById("signUpFirstName").value;
+  const lastName = document.getElementById("signUpLastName").value;
+  const birthDate = document.getElementById("signUpBirthdate").value;
+  const mathPeriod = document.getElementById("signUpPeriod").value;
   try {
-    const result = await auth.signUp(email, password);
+    const userProfile = await auth.signUp(email, password, {email, firstName, lastName, birthDate, mathPeriod});
+    sessionStorage.setItem("userProfile_IB", JSON.stringify(userProfile));
     window.location.replace("./index.html");    
   } catch (err) {
     alert("Sign-up error: " + err.message);
@@ -80,7 +86,6 @@ deleteForm.onsubmit = async (e) => {
   e.preventDefault();
   const email = document.getElementById("deleteEmail").value;
   const password = document.getElementById("deletePassword").value;
-  // debugger;
   try {
     if(confirm("Are you sure? This cannot be undone.")){
       await auth.deleteAccount(email, password);
@@ -92,18 +97,7 @@ deleteForm.onsubmit = async (e) => {
 };
 
 
-// Handle Sign Out
-const signOutForm = document.getElementById("signOutForm") || {};
-signOutForm.onsubmit = async (e) => {
-  console.log("Sign Out clicked")
-  e.preventDefault();
-  try {
-    await auth.signOutUser();
-    alert("Signed out successfully.");
-  } catch (err) {
-    alert("Sign-out error: " + err.message);
-  }
-};
+
 
 // Handle Google
 const googleBtn = document.getElementById("googleSignIn");
