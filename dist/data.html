@@ -13,46 +13,118 @@
         }
     </style>
 </head>
-<body>
-    <header class="py-2" style="display: flex; width: 100%; justify-content: space-evenly; align-items: center;">         
-        <!-- Nav Buttons -->
-        <div class="btn-group" role="group">
-            <button id="showMyProfile" class="btn btn-outline-primary active">My Profile</button>
-            <button id="showMyData" class="btn btn-outline-primary">My Data</button>
-            <button id="showPopulationData" class="btn btn-outline-primary">Population Data</button>
-            <button id="signOutButton" class="btn btn-outline-danger">Log Out</button>
+<body class="bg-light">
+
+    <header class="py-3 bg-white shadow-sm mb-4">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <!-- Nav Buttons -->
+            <div class="btn-group mb-2 mb-md-0" role="group">
+                <button id="showMyProfile" class="btn btn-outline-primary active">My Profile</button>
+                <button id="showMyData" class="btn btn-outline-primary">My Data</button>
+                <button id="showPopulationData" class="btn btn-outline-primary">Population Data</button>
+                <button id="signOutButton" class="btn btn-outline-danger">Log Out</button>
+            </div>
+            <button id="forceRefresh" class="btn btn-outline-secondary">Refresh Data 🔄</button>
         </div>
-        <button id="forceRefresh" class="btn btn-outline-secondary">Refresh Data 🔄</button>
     </header>
-    <h1>InfoBloom</h1>
 
-    <div id="myProfile" class="main active">
-        <h3>My Profile</h3>
-        <h5>View and edit your profile.</h5>
-        <div id="profileBadgesContainer" class="w-100">
-            <div id="fullName" class="profile-badge">
-                <h5 class="badge-header">Full Name</h5>
-                <div class="badge-content">Loading...</div>
-            </div>
-            <div id="birthDate" class="profile-badge">
-                <h5 class="badge-header">Birthday</h5>
-                <div class="badge-content">Loading...</div>
-            </div>
-            <div id="questionsAnswered" class="profile-badge">
-                <h5 class="badge-header">Questions Answered</h5>
-                <div class="badge-content">Loading...</div>
+    <div class="container">
+        <h1 class="text-center mb-4">InfoBloom</h1>
+
+        <div id="myProfile" class="main active">
+            <h3 class="mb-2">My Profile</h3>
+            <h5 class="text-muted mb-4">View and edit your profile.</h5>
+            <div id="myProfileContainer" class="row gy-4">
+                <div id="fullName" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Full Name</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="birthDate" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Birthday</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="questionsAnswered" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Questions Answered</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <div id="myData" class="main">
+            <h3 class="mt-4 mb-2">My Data</h3>
+            <h5 class="text-muted mb-4">Visualize your personal data.</h5>
+            <div id="myDataContainer" class="row gy-4">
+                <div id="myHeight" class="data-badge percentile col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Height</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="myBirthDate" class="data-badge heatmap col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Birthday</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="myQuestionsAnswered" class="data-badge boxplot col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Questions Answered</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="populationData" class="main">
+            <h3 class="mt-4 mb-2">Population Data</h3>
+            <h5 class="text-muted mb-4">Visualize data from across the school.</h5>
+            <div id="populationDataContainer" class="row gy-4">
+                <div id="populationHeight" class="data-badge histogram col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Height</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="populationBirthDate" class="data-badge heatmap col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Birthday</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="populationQuestionsAnswered" class="data-badge boxplot col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Questions Answered</h5>
+                            <div class="badge-content card-text">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="myData" class="main">
-        <h3>My Data</h3>
-        <h5>Visualize you personal data.</h5>
-    </div>
-    <div id="populationData" class="main">
-        <h3>Population Data</h3>
-        <h5>Visualize data from across the school.</h5>
-    </div>
+
     <script src="main.js" type="module"></script>
 </body>
 </html>

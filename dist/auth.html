@@ -16,104 +16,99 @@
     }
   </style>
 </head>
-<body class="container mt-5">
+<body class="bg-light py-5">
 
-  <h1 class="mb-4">InfoBloom</h1>
+  <div class="container">
+    <h1 class="text-center mb-5">InfoBloom</h1>
 
-  <!-- Toggle Buttons -->
-  <div class="btn-group mb-4" role="group">
-    <button id="showSignIn" class="btn btn-outline-primary active">Sign In</button>
-    <button id="showSignUp" class="btn btn-outline-primary">Sign Up</button>
-    <button id="showReset" class="btn btn-outline-primary">Reset Password</button>
-    <button id="showDelete" class="btn btn-outline-danger">Delete Account</button>
-  </div>
-
-  <!-- Sign In Form -->
-  <form id="signInForm" class="auth-form active">
-    <h3>Sign In</h3>
-    <div class="mb-3">
-      <label>Email</label>
-      <input class="form-control" type="email" id="signInEmail" required />
+    <!-- Toggle Buttons -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+      <button id="showSignIn" class="btn btn-outline-primary active">Sign In</button>
+      <button id="showSignUp" class="btn btn-outline-primary">Sign Up</button>
+      <button id="showReset" class="btn btn-outline-primary">Reset Password</button>
+      <button id="showDelete" class="btn btn-outline-danger">Delete Account</button>
     </div>
-    <div class="mb-3">
-      <label>Password</label>
-      <input class="form-control" type="password" id="signInPassword" required />
-    </div>
-    <input class="btn btn-primary" type="submit" value="Sign In" />
-  </form>
 
-<!-- Sign Up Form -->
-<form id="signUpForm" class="auth-form">
-  <h3>Sign Up</h3>
+    <!-- Sign In Form -->
+    <form id="signInForm" class="auth-form active card shadow-sm p-4 mb-4">
+      <h3 class="mb-4">Sign In</h3>
+      <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" type="email" id="signInEmail" required />
+      </div>
+      <div class="mb-3">
+        <label>Password</label>
+        <input class="form-control" type="password" id="signInPassword" required />
+      </div>
+      <input class="btn btn-primary w-100" type="submit" value="Sign In" />
+    </form>
 
-  <div class="mb-3">
-    <label>First Name</label>
-    <input class="form-control" type="text" id="signUpFirstName" required />
-  </div>
+    <!-- Sign Up Form -->
+    <form id="signUpForm" class="auth-form card shadow-sm p-4 mb-4">
+      <h3 class="mb-4">Sign Up</h3>
 
-  <div class="mb-3">
-    <label>Last Name</label>
-    <input class="form-control" type="text" id="signUpLastName" required />
-  </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>First Name</label>
+          <input class="form-control" type="text" id="signUpFirstName" required />
+        </div>
 
-  <div class="mb-3">
-    <label>Birthdate</label>
-    <input class="form-control" type="date" id="signUpBirthdate" required />
-  </div>
+        <div class="col-md-6 mb-3">
+          <label>Last Name</label>
+          <input class="form-control" type="text" id="signUpLastName" required />
+        </div>
+      </div>
 
-  <div class="mb-3">
-    <label>Math Period (1–7)</label>
-    <input
-      class="form-control"
-      type="number"
-      id="signUpPeriod"
-      min="1"
-      max="7"
-      required
-    />
-  </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>Birthdate</label>
+          <input class="form-control" type="date" id="signUpBirthdate" required />
+        </div>
 
-  <div class="mb-3">
-    <label>Email</label>
-    <input class="form-control" type="email" id="signUpEmail" required />
-  </div>
+        <div class="col-md-6 mb-3">
+          <label>Math Period (1–7)</label>
+          <input class="form-control" type="number" id="signUpPeriod" min="1" max="7" required />
+        </div>
+      </div>
 
-  <div class="mb-3">
-    <label>Password</label>
-    <input class="form-control" type="password" id="signUpPassword" required />
-  </div>
+      <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" type="email" id="signUpEmail" required />
+      </div>
 
-  <div class="mb-3">
-    <label>Confirm Password</label>
-    <input
-      class="form-control"
-      type="password"
-      id="signUpConfirmPassword"
-      required
-    />
-  </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>Password</label>
+          <input class="form-control" type="password" id="signUpPassword" required />
+        </div>
 
-  <input class="btn btn-success" type="submit" value="Create Account" />
-</form>
+        <div class="col-md-6 mb-3">
+          <label>Confirm Password</label>
+          <input class="form-control" type="password" id="signUpConfirmPassword" required />
+        </div>
+      </div>
 
-  <!-- Password Reset Form -->
-  <form id="resetForm" class="auth-form">
-    <h3>Reset Password</h3>
-    <div class="mb-3">
-      <label>Email</label>
-      <input class="form-control" type="email" id="resetEmail" required />
-    </div>
-    <div class="mb-3 invisible">
+      <input class="btn btn-success w-100" type="submit" value="Create Account" />
+    </form>
+
+    <!-- Password Reset Form -->
+    <form id="resetForm" class="auth-form card shadow-sm p-4 mb-4">
+      <h3 class="mb-4">Reset Password</h3>
+      <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" type="email" id="resetEmail" required />
+      </div>
+      <div class="mb-3 invisible">
         <label>Password</label>
         <input class="form-control" type="text" disabled />
       </div>
-    <input class="btn btn-warning" type="submit" value="Send Reset Link" />
-  </form>
+      <input class="btn btn-warning w-100" type="submit" value="Send Reset Link" />
+    </form>
 
-  <!-- Delete Account -->
-  <form id="deleteForm" class="auth-form">
-    <h3>Delete Account</h3>
-    <div class="mb-3">
+    <!-- Delete Account -->
+    <form id="deleteForm" class="auth-form card shadow-sm p-4 mb-4">
+      <h3 class="mb-4 text-danger">Delete Account</h3>
+      <div class="mb-3">
         <label>Email</label>
         <input class="form-control" type="email" id="deleteEmail" required />
       </div>
@@ -121,17 +116,20 @@
         <label>Password</label>
         <input class="form-control" type="password" id="deletePassword" required />
       </div>
-    <input type="submit" class="btn btn-danger" value="Delete" />
-  </form>
+      <input type="submit" class="btn btn-danger w-100" value="Delete" />
+    </form>
 
-  <!-- Google Sign-In Button -->
-  <!-- <div class="mt-3">
-      <button id="googleSignIn" class="btn btn-sm btn-outline-danger w-auto">
-          <img src="https://developers.google.com/identity/images/g-logo.png" width="20" class="me-2" />
-          Sign in with Google
+    <!-- Google Sign-In Button (Commented Out) -->
+    <!--
+    <div class="mt-3 text-center">
+      <button id="googleSignIn" class="btn btn-outline-danger">
+        <img src="https://developers.google.com/identity/images/g-logo.png" width="20" class="me-2" />
+        Sign in with Google
       </button>
-  </div> -->
-  
+    </div>
+    -->
+  </div>
+
   <script src="main.js" type="module"></script>
 </body>
 </html>
