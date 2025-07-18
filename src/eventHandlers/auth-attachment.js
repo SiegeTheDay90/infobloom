@@ -41,8 +41,7 @@ signInForm.onsubmit = async (e) => {
   const email = document.getElementById("signInEmail").value;
   const password = document.getElementById("signInPassword").value;
   try {
-    const userProfile = await auth.signIn(email, password);
-    sessionStorage.setItem("userProfile_IB", JSON.stringify(userProfile));
+    await auth.signIn(email, password);
     window.location.replace("./index.html");
   } catch (err) {
     alert("Sign-in error: " + err.message);
@@ -60,9 +59,8 @@ signUpForm.onsubmit = async (e) => {
   const birthDate = document.getElementById("signUpBirthdate").value;
   const mathPeriod = document.getElementById("signUpPeriod").value;
   try {
-    const userProfile = await auth.signUp(email, password, {email, firstName, lastName, birthDate, mathPeriod});
-    sessionStorage.setItem("userProfile_IB", JSON.stringify(userProfile));
-    window.location.replace("./index.html");    
+    await auth.signUp(email, password, {email, firstName, lastName, birthDate, mathPeriod});
+    window.location.replace("./index.html");
   } catch (err) {
     alert("Sign-up error: " + err.message);
   }

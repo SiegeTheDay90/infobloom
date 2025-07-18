@@ -36,9 +36,8 @@ export async function getAllData(){
     const snapshot = await getDocs(collectionRef);
     const allData = {};
     snapshot.forEach(doc => {
-        const data = doc.data();
         console.log(data.email, " => ", data.firstName, data.lastName);
-        allData[doc.id] = data;
+        allData[doc.id] = doc.data();
     })
     return allData;
 }

@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { deleteUser, getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseConfig";
-import { createProfile, getProfile } from "./dataFunctions";
+import { createProfile, getProfile, getAllData } from "./dataFunctions";
 
 
 // Initialize Firebase
@@ -12,7 +12,15 @@ export async function signUp(email, password, profile){
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const userProfile = await createProfile({...userCredential.user, ...profile});
-        return userProfile;
+        sessionStorage.setItem('InfoBloomUser', userProfile.uid);
+        const allData = await getAllData();
+        sessionStorage.setItem('InfoBloomData', JSON.stringify(allData));
+        
+        if(userProfile){
+            return userProfile;
+        } else {
+            throw new Error("userProfile not created")
+        }
     } catch (error) {
         console.error(error.code, ":", error.message);
         throw error; // optional: rethrow if you want to handle it elsewhere
@@ -23,7 +31,10 @@ export async function signIn(email, password){
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const userProfile = await getProfile(userCredential.user);
-        return userProfile;
+        sessionStorage.setItem('InfoBloomUser', userProfile.uid);
+        const allData = await getAllData();
+        sessionStorage.setItem('InfoBloomData', JSON.stringify(allData));
+        return true;
     } catch (error) {
         console.error(error.code, ":", error.message);
         throw error;
@@ -100,9 +111,10 @@ export async function deleteAccount(email, password){
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is still signed in:", user.email);
-        if(window.location.href.slice(-9) == "auth.html"){
+
+        if(window.location.href.slice(-9) !== "data.html"){
             setTimeout(() => 
-                window.location.replace("./index.html")
+                window.location.replace("./data.html")
             , 500);
         }
     } else {
