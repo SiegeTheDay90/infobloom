@@ -42,7 +42,6 @@ signInForm.onsubmit = async (e) => {
   const password = document.getElementById("signInPassword").value;
   try {
     await auth.signIn(email, password);
-    window.location.replace("./index.html");
   } catch (err) {
     alert("Sign-in error: " + err.message);
   }
@@ -52,15 +51,18 @@ signInForm.onsubmit = async (e) => {
 const signUpForm = forms.signUp || {};
 signUpForm.onsubmit = async (e) => {
   e.preventDefault();
+  let [year, month, day] = document.getElementById("signUpBirthdate").value.split("-");
+
+  
+  
   const email = document.getElementById("signUpEmail").value;
   const password = document.getElementById("signUpPassword").value;
   const firstName = document.getElementById("signUpFirstName").value;
   const lastName = document.getElementById("signUpLastName").value;
-  const birthDate = document.getElementById("signUpBirthdate").value;
+  const birthDate = new Date(year, month-1, day).toDateString();
   const mathPeriod = document.getElementById("signUpPeriod").value;
   try {
     await auth.signUp(email, password, {email, firstName, lastName, birthDate, mathPeriod});
-    window.location.replace("./index.html");
   } catch (err) {
     alert("Sign-up error: " + err.message);
   }
@@ -98,14 +100,14 @@ deleteForm.onsubmit = async (e) => {
 
 
 // Handle Google
-const googleBtn = document.getElementById("googleSignIn");
-if (googleBtn) {
-  googleBtn.onclick = async () => {
-    try {
-      await auth.signInWithGoogle(); // assuming you’ve exported this function
-      // Note: if using `signInWithRedirect`, you may not reach this point immediately.
-    } catch (err) {
-      alert("Google Sign-In error: " + err.message);
-    }
-  };
-}
+// const googleBtn = document.getElementById("googleSignIn");
+// if (googleBtn) {
+//   googleBtn.onclick = async () => {
+//     try {
+//       await auth.signInWithGoogle(); // assuming you’ve exported this function
+//       // Note: if using `signInWithRedirect`, you may not reach this point immediately.
+//     } catch (err) {
+//       alert("Google Sign-In error: " + err.message);
+//     }
+//   };
+// }

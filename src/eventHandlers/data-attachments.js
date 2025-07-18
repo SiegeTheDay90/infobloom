@@ -1,4 +1,6 @@
 import * as auth from "../firebase/authFunctions.js";
+import { updateStoredData } from "../firebase/dataFunctions.js";
+import { updateDisplay } from "../ui/data-display.js";
 
 // Handle Sign Out
 const signOutButton = document.getElementById("signOutButton") || {};
@@ -6,7 +8,6 @@ signOutButton.onclick = async (e) => {
   e.preventDefault();
   try {
     await auth.signOutUser();
-    sessionStorage.removeItem("userProfile_IB");
     alert("Signed out successfully.");
   } catch (err) {
     alert("Sign-out error: " + err.message);
@@ -16,7 +17,8 @@ signOutButton.onclick = async (e) => {
 const menuButtons = {
     myProfile: document.getElementById('showMyProfile'),
     myData: document.getElementById('showMyData'),
-    populationData: document.getElementById('showPopulationData')
+    populationData: document.getElementById('showPopulationData'),
+    forceRefresh: document.getElementById('forceRefresh')
 }
 
 const mainDivs = {
@@ -41,3 +43,6 @@ function showForm(formKey) {
 document.getElementById("showMyProfile")?.addEventListener('click', () => showForm("myProfile"));
 document.getElementById("showMyData")?.addEventListener('click', () => showForm("myData"));
 document.getElementById("showPopulationData")?.addEventListener('click', () => showForm("populationData"));
+document.getElementById("forceRefresh")?.addEventListener('click', async () => {await updateStoredData(); updateDisplay();});
+
+if(window.location.href.slice(-9) == "data.html") updateDisplay();

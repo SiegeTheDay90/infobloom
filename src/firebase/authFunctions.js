@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app"
 import { deleteUser, getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseConfig";
-import { createProfile, getProfile, getAllData } from "./dataFunctions";
+import { createProfile, getProfile, getAllData, updateStoredData } from "./dataFunctions";
+import { updateDisplay } from "../ui/data-display";
 
 
 // Initialize Firebase
@@ -10,30 +11,16 @@ const auth = getAuth(app);
 
 export async function signUp(email, password, profile){
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userProfile = await createProfile({...userCredential.user, ...profile});
-        sessionStorage.setItem('InfoBloomUser', userProfile.uid);
-        const allData = await getAllData();
-        sessionStorage.setItem('InfoBloomData', JSON.stringify(allData));
-        
-        if(userProfile){
-            return userProfile;
-        } else {
-            throw new Error("userProfile not created")
-        }
+        sessionStorage.setItem('InfoBloomTempProfile', JSON.stringify(profile));
+        await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
-        console.error(error.code, ":", error.message);
         throw error; // optional: rethrow if you want to handle it elsewhere
     }
 }
 
 export async function signIn(email, password){
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const userProfile = await getProfile(userCredential.user);
-        sessionStorage.setItem('InfoBloomUser', userProfile.uid);
-        const allData = await getAllData();
-        sessionStorage.setItem('InfoBloomData', JSON.stringify(allData));
+        await signInWithEmailAndPassword(auth, email, password);
         return true;
     } catch (error) {
         console.error(error.code, ":", error.message);
@@ -77,6 +64,59 @@ export async function deleteAccount(email, password){
     }
 }
 
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        console.log("User is still signed in:", user.email);
+        
+        // Store current user id
+        localStorage.setItem("InfoBloomUser", user.uid);
+
+        // Last time data updated (or null)
+        const lastUpdate = new Date(Number(localStorage.getItem('InfoBloomLastUpdatedAt')));
+        const now = new Date();
+
+        // Reload data if >30 minutes old, or missing
+        if(now - lastUpdate >= 30 * 60 * 1000 || !localStorage.getItem('InfoBloomData') || sessionStorage.getItem('InfoBloomTempProfile')){
+        // if(!localStorage.getItem('InfoBloomData') || sessionStorage.getItem('InfoBloomTempProfile')){
+            try{
+                const tempProfile = JSON.parse(sessionStorage.getItem('InfoBloomTempProfile'));
+                if(tempProfile){
+                    await createProfile({...user, ...tempProfile});
+                    sessionStorage.removeItem('InfoBloomTempProfile')
+                }
+                await updateStoredData();
+                console.log("New Data Printed Above?");            
+            } catch(error){
+                console.error("Data did not update properly.");
+                console.error(error);
+            }
+        }
+
+        // redirect if not on data page
+        if(window.location.href.slice(-9) !== "data.html"){
+            // setTimeout(() => 
+                window.location.replace("./data.html")
+            // , 500);
+        }
+    } else {
+        console.log("User is signed out");
+
+        // Remove user, keep data?
+        localStorage.removeItem('InfoBloomUser');
+        // localStorage.removeItem('InfoBloomData');
+        // localStorage.removeItem('InfoBloomLastUpdatedAt');
+
+    
+        // redirect if not on auth page
+        if(window.location.href.slice(-9) !== "auth.html"){
+            // setTimeout(() => 
+                window.location.replace("./auth.html")
+            // , 500);
+        }
+    }
+});
+
+
 // Call this function when your app loads, *after* Firebase is initialized.
 // This is the function that processes the result after the redirect.
 // getRedirectResult(auth)
@@ -107,22 +147,3 @@ export async function deleteAccount(email, password){
 
 // Remember to also have your onAuthStateChanged listener running!
 // It will pick up the user from the redirect result.
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("User is still signed in:", user.email);
-
-        if(window.location.href.slice(-9) !== "data.html"){
-            setTimeout(() => 
-                window.location.replace("./data.html")
-            , 500);
-        }
-    } else {
-        console.log("User is signed out");
-        if(window.location.href.slice(-9) !== "auth.html"){
-            setTimeout(() => 
-                window.location.replace("./auth.html")
-            , 500);
-        }
-    }
-});

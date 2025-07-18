@@ -1,3 +1,2 @@
-import './eventHandlers/auth-attachment.js';
-import './eventHandlers/main-attachment.js';
-import './ui/loadData.js';
+import './eventHandlers/auth-attachments.js';
+import './eventHandlers/data-attachments.js';
