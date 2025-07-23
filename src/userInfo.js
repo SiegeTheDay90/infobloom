@@ -1,3 +1,23 @@
+const userInfoTypes = `{
+    "email": String,
+    "firstName": String,
+    "lastName": String,
+    "preferredName": String,
+    "birthDate": DateString,
+    "classPeriod": String,
+    "heightInInches": Integer,
+    "hoursOfSleep": Number,
+    "favoriteSubject": String,
+    "screenTimeHours": Number,
+    "careerInterest": String,
+    "favoriteSocialMedia": String,
+    "languagesSpoken": Array<String>,
+    "hasPets": Boolean,
+    "petType": String,
+    "motivationalQuote": String,
+    "superpowerChoice": String
+}`;
+
 const userInfo = {
     "role": "student",
     "userId": 103,

@@ -81,7 +81,9 @@ onAuthStateChanged(auth, async (user) => {
             try{
                 const tempProfile = JSON.parse(sessionStorage.getItem('InfoBloomTempProfile'));
                 if(tempProfile){
-                    await createProfile({...user, ...tempProfile});
+                    debugger;
+                    let newUser = await createProfile({uid: user.uid, ...tempProfile});
+                    console.log(newUser);
                     sessionStorage.removeItem('InfoBloomTempProfile')
                 }
                 await updateStoredData();
@@ -99,7 +101,7 @@ onAuthStateChanged(auth, async (user) => {
             // , 500);
         }
     } else {
-        console.log("User is signed out");
+        console.log("User is signed out.");
 
         // Remove user, keep data?
         localStorage.removeItem('InfoBloomUser');

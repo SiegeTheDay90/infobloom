@@ -51,22 +51,67 @@ signInForm.onsubmit = async (e) => {
 const signUpForm = forms.signUp || {};
 signUpForm.onsubmit = async (e) => {
   e.preventDefault();
-  let [year, month, day] = document.getElementById("signUpBirthdate").value.split("-");
 
-  
-  
+  const form = document.getElementById("signUpForm");
+  const [year, month, day] = document.getElementById("signUpBirthDate").value.split("-");
+  const birthDate = new Date(year, month - 1, day).toDateString();
+
   const email = document.getElementById("signUpEmail").value;
   const password = document.getElementById("signUpPassword").value;
   const firstName = document.getElementById("signUpFirstName").value;
   const lastName = document.getElementById("signUpLastName").value;
-  const birthDate = new Date(year, month-1, day).toDateString();
-  const mathPeriod = document.getElementById("signUpPeriod").value;
+  const preferredName = document.getElementById("signUpPreferredName").value;
+  const mathPeriod = parseInt(document.getElementById("signUpPeriod").value);
+
+  const heightInInches = parseFloat(document.getElementById("signUpHeightInInches").value) || null;
+  const hoursOfSleep = parseFloat(document.getElementById("signUpHoursOfSleep").value) || null;
+  const screenTimeHours = parseFloat(document.getElementById("signUpScreenTimeHours").value) || null;
+
+  const favoriteSubject = document.getElementById("signUpFavoriteSubject").value || null;
+  const careerInterest = document.getElementById("signUpCareerInterest").value || null;
+  const favoriteSocialMedia = document.getElementById("signUpFavoriteSocialMedia").value || null;
+  const languagesSpoken = document.getElementById("signUpLanguagesSpoken").value || null;
+
+  const hasPets = document.getElementById("signUpHasPets").value === "true";
+  const petType = hasPets ? document.getElementById("signUpPetType").value : null;
+
+  const motivationalQuote = document.getElementById("signUpMotivationalQuote").value || null;
+  const superPower = document.getElementById("signUpSuperpowerChoice").value || null;
+
+  // Optional: password confirmation check
+  const confirmPassword = document.getElementById("signUpConfirmPassword").value;
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  const userData = {
+    email,
+    firstName,
+    lastName,
+    preferredName,
+    birthDate,
+    mathPeriod,
+    heightInInches,
+    hoursOfSleep,
+    screenTimeHours,
+    favoriteSubject,
+    careerInterest,
+    favoriteSocialMedia,
+    languagesSpoken,
+    hasPets,
+    petType,
+    motivationalQuote,
+    superPower,
+  };
+
   try {
-    await auth.signUp(email, password, {email, firstName, lastName, birthDate, mathPeriod});
+    await auth.signUp(email, password, userData);
   } catch (err) {
     alert("Sign-up error: " + err.message);
   }
 };
+
 
 // Handle Password Reset
 const resetForm = forms.reset || {};
