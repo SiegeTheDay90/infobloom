@@ -81,9 +81,7 @@ onAuthStateChanged(auth, async (user) => {
             try{
                 const tempProfile = JSON.parse(sessionStorage.getItem('InfoBloomTempProfile'));
                 if(tempProfile){
-                    debugger;
                     let newUser = await createProfile({uid: user.uid, ...tempProfile});
-                    console.log(newUser);
                     sessionStorage.removeItem('InfoBloomTempProfile')
                 }
                 await updateStoredData();

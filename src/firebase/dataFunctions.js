@@ -55,7 +55,6 @@ export async function getAllData(){
     const allData = {};
     snapshot.forEach(doc => {
         const data = doc.data();
-        console.log(data.email, " => ", data.firstName, data.lastName);
         allData[doc.id] = data;
     })
     return allData;

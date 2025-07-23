@@ -54,7 +54,7 @@ signUpForm.onsubmit = async (e) => {
 
   const form = document.getElementById("signUpForm");
   const [year, month, day] = document.getElementById("signUpBirthDate").value.split("-");
-  const birthDate = new Date(year, month - 1, day).toDateString();
+  const birthDate = new Date(year, month - 1, day);
 
   const email = document.getElementById("signUpEmail").value;
   const password = document.getElementById("signUpPassword").value;
