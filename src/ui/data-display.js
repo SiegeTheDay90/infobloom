@@ -1,6 +1,46 @@
 import { percentile, ranking } from "../util/calculator";
-// import Chart from 'chartjs/';
-// import ChartAnnotation from 'chartjs-plugin-annotation';
+import Chart from 'chart.js/auto';
+import { attachHistogram, attachMatrixChart } from "./chartFunctions";
+
+
+// Raw data from localStorage
+const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
+const currentUser = localStorage.getItem("InfoBloomUser");
+const userData = allData?.[currentUser];
+
+// Arrays 
+const heightsArray = Object.values(allData).map(user => user.heightInInches || 0);
+const birthDatesArray = Object.values(allData).map(user => {
+    const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
+    return Number(birthDate);
+});
+
+
+// Aggregate data
+const heightsSplit = [0, 0, 0, 0, 0];
+const birthByMonthDay = {};
+Object.values(allData).forEach((user) => {
+    // Heights split into ranges
+    const height = user.heightInInches;
+    if(height < 55){
+        heightsSplit[0] += 1;
+    } else if(height < 61){
+        heightsSplit[1] += 1;
+    } else if(height < 67){
+        heightsSplit[2] += 1;
+    } else if(height < 73){
+        heightsSplit[3] += 1;
+    } else if(height >= 73){
+        heightsSplit[4] += 1;
+    }
+
+    // Birthdays by month and day
+    const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
+    const month = birthDate.getMonth();
+    const day = birthDate.getDate();
+    birthByMonthDay[`${month + 1}-${day}`] ||= {x: month + 1, y: day, v: 0};
+    birthByMonthDay[`${month + 1}-${day}`].v += 1;
+})
 
 
 export function showUpdateButton(){
@@ -14,29 +54,22 @@ export function updateDisplay() {
 }
 
 
-export var myBirthDateChart;
 function updateMyData(){
-    const currentUser = localStorage.getItem("InfoBloomUser");
-    const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
-    if (!allData?.[currentUser]) return;   
-    const userData = allData[currentUser];
-    const heightsArray = Object.values(allData).map(user => user.heightInInches || 0);
+    if (!userData) return;
     const heightPercentile = percentile(heightsArray, userData.heightInInches || 0);
-    if(myBirthDateChart) myBirthDateChart.destroy();
-    myBirthDateChart = new Chart(document.getElementById('myHeightChart'), {
-    type: 'bar',
-    data: {
+    const heightPercentileEl = document.getElementById("myHeightChart");
+   const data = {
         labels: ['Height Percentile'],
         datasets: [{
-        label: 'Percentile',
-        data: [Math.round(heightPercentile)], // Full scale
-        backgroundColor: '#5a60ffff',
-        borderSkipped: false,
-        barPercentage: 1.0,
-        categoryPercentage: 1.0,
+            label: 'Percentile',
+            data: [Math.round(heightPercentile)],
+            backgroundColor: '#5a60ffff',
+            borderSkipped: false,
+            barPercentage: 1.0,
+            categoryPercentage: 1.0,
         }]
-    },
-    options: {
+    }
+    const options = {
         indexAxis: 'y',
         responsive: true,
         scales: {
@@ -44,7 +77,7 @@ function updateMyData(){
             min: 0,
             max: 100,
             ticks: {
-            stepSize: 10,
+            stepSize: 5,
             callback: value => `${value}%`,
             }
         },
@@ -73,126 +106,94 @@ function updateMyData(){
         },
         legend: { display: false }
         }
-    },
-    // plugins: [ChartAnnotation] // Load annotation plugin separately
-    });
 
-    const birthDatesArray = Object.values(allData).map(user => {
-        const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
-        return Number(birthDate);
-    });
+    }
+
+    if(heightPercentileEl){
+        attachHistogram(heightPercentileEl, data, options);
+    }
+
+
 
     const birthDateRanking = ranking(birthDatesArray, Number(new Date(userData.birthDate?.seconds * 1000 || userData.birthDate)));
     const birthDayEl = document.getElementById("myBirthDateChart");
     if(birthDayEl){
-        birthDayEl.innerText = `Your birthday is ranked #${birthDateRanking} oldest out of ${birthDatesArray.length} students.`;
+        birthDayEl.innerText = `Your birthday is ranked #${birthDateRanking} oldest out of ${birthDatesArray.length} users.`;
     }
 }
 
 
-export var populationHeightChart;
-export var populationBirthDateChart;
 function updatePopulationData() {
     try {
-        const currentUser = localStorage.getItem("InfoBloomUser");
-        const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
-        if (!allData?.[currentUser]) return;   
+        if (!userData) return;
 
-        const userData = allData[currentUser];
-
-        let ctx = document.getElementById('populationHeightChart')?.getContext('2d');
-        const heights = [0, 0, 0, 0, 0];
-        const birthDates = {};
-        if(ctx){
-            Object.values(allData).forEach((user) => {
-                const height = user.heightInInches;
-                if(height < 55){
-                    heights[0] += 1;
-                } else if(height < 61){
-                    heights[1] += 1;
-                } else if(height < 67){
-                    heights[2] += 1;
-                } else if(height < 73){
-                    heights[3] += 1;
-                } else if(height >= 73){
-                    heights[4] += 1;
-                }
-
-                const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
-                const month = birthDate.getMonth();
-                const day = birthDate.getDate();
-                // debugger;
-                birthDates[`${month},${day}`] ||= {x: month+1, y: day, v: 0};
-                birthDates[`${month},${day}`].v += 1;
-            })
-
-            if(populationHeightChart) populationHeightChart.destroy();
-            populationHeightChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['48-54', '55-60', '61-66', '67-72', '73-78'],
-                    datasets: [{
-                    label: 'Height in Inches',
-                    data: heights,
-                    backgroundColor: '#4e73df'
-                    }]
-                },
-                options: {
-                    plugins: {
-                    title: { display: true, text: 'Student Heights Histogram' }
-                    }
-                }
-            })
+        let populationHeightEl = document.getElementById('populationHeightChart');
+        const heightLabels = ['48-54', '55-60', '61-66', '67-72', '73-78'];
+        const data = {
+            labels: heightLabels,
+            datasets: [{
+                label: 'Height in Inches',
+                data: heightsSplit,
+                backgroundColor: '#4e73df'
+            }]
+        }
+        const options = {
+            plugins: {
+                title: { display: true, text: 'Student Heights Histogram' }
+            }
+        }
+        if (populationHeightEl) {
+            attachHistogram(populationHeightEl, data, options);
         }
 
-        ctx = document.getElementById('populationBirthDateChart')?.getContext('2d');
-        if(ctx){
-        if(populationBirthDateChart) populationBirthDateChart.destroy();
-          populationBirthDateChart = new Chart(ctx, {
-            type: 'matrix',
-            data: {
-              datasets: [{
-                label: 'Date',
-                data: Object.values(birthDates),
-                backgroundColor(context) {
-                  const value = context.dataset.data[context.dataIndex].v;
-                  const alpha = Math.min(1, value / 2);
-                  return `rgba(255, 0, 0, ${alpha})`;
+        let populationBirthEl = document.getElementById('populationBirthDateChart');
+
+        if(populationBirthEl){
+            const options = {
+                responsive: true,
+                plugins: {
+                    title: {
+                    display: true,
+                    text: 'Birthday Frequency by Day & Month'
+                    }
                 },
-                borderColor: 'rgba(255, 17, 17, 0.1)',
-                borderWidth: 1,
-                width: ({ chart }) => chart.width / 30,
-                height: ({ chart }) => chart.height / 30
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'Birthday Frequency by Day & Month'
+                scales: {
+                    x: {
+                    type: 'linear',
+                    position: 'top',
+                    min: 1,
+                    max: 12,
+                    ticks: {
+                        stepSize: 1,
+                        callback: val => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][val - 1]
+                    }
+                    },
+                    y: {
+                        type: 'linear',
+                        min: 1,
+                        max: 31,
+                        ticks: { stepSize: 1 }
+                    }
                 }
-              },
-              scales: {
-                x: {
-                  type: 'linear',
-                  position: 'top',
-                  min: 1,
-                  max: 12,
-                  ticks: {
-                    stepSize: 1,
-                    callback: val => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][val - 1]
-                  }
-                },
-                y: {
-                  type: 'linear',
-                  min: 1,
-                  max: 31,
-                  ticks: { stepSize: 1 }
-                }
-              }
             }
-          });
+
+            const data = {
+                datasets: [{
+                    label: 'Date',
+                    data: Object.values(birthByMonthDay),
+                    backgroundColor(context) {
+                        const value = context.dataset.data[context.dataIndex].v;
+                        const alpha = Math.min(1, value / 4);
+                        return `rgba(255, 0, 0, ${alpha})`;
+                    },
+                    borderColor: 'rgba(255, 17, 17, 0.1)',
+                    borderWidth: 1,
+                    width: ({ chart }) => chart.width / 30,
+                    height: ({ chart }) => chart.height / 30
+                }]
+            }
+            
+            attachMatrixChart(populationBirthEl, data, options);
         }
     } catch (error) {
         console.error("updateMyData did not work");
