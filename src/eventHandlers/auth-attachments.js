@@ -47,6 +47,19 @@ signInForm.onsubmit = async (e) => {
   }
 };
 
+const demoButton = document.getElementById("demoBtn") || {};
+demoButton.onclick = async (e) => {
+  e.preventDefault();
+  const email = "ClarenceSmith90@gmail.com";
+  const password = "family";
+  try {
+    await auth.signIn(email, password);
+  } catch (err) {
+    alert("Sign-in error: " + err.message);
+  }
+}
+
+
 // Handle Sign Up
 const signUpForm = forms.signUp || {};
 signUpForm.onsubmit = async (e) => {
