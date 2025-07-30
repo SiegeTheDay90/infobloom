@@ -1,67 +1,13 @@
 import { percentile, ranking } from "../util/calculator";
-import Chart from 'chart.js/auto';
 import { attachBoxPlot, attachHistogram, attachMatrixChart, attachRadarChart, attachScatterPlot } from "./chartFunctions";
-
+import { heightsArray, birthDatesArray, heightBins, screenTimeBins, birthByMonthDay, subjectCounts } from "../util/aggregate-data";
 
 // Raw data from localStorage
 const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
 const currentUser = localStorage.getItem("InfoBloomUser");
 const userData = allData?.[currentUser];
 
-// Arrays 
-const heightsArray = Object.values(allData).map(user => user.heightInInches || 0);
-const birthDatesArray = Object.values(allData).map(user => {
-    const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
-    return Number(birthDate);
-});
 
-
-// Aggregate data
-const heightsSplit = [0, 0, 0, 0, 0];
-const birthByMonthDay = {};
-Object.values(allData).forEach((user) => {
-    // Heights split into ranges
-    const height = user.heightInInches;
-    if(height < 55){
-        heightsSplit[0] += 1;
-    } else if(height < 61){
-        heightsSplit[1] += 1;
-    } else if(height < 67){
-        heightsSplit[2] += 1;
-    } else if(height < 73){
-        heightsSplit[3] += 1;
-    } else if(height >= 73){
-        heightsSplit[4] += 1;
-    }
-
-    // Birthdays by month and day
-    const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
-    const month = birthDate.getMonth();
-    const day = birthDate.getDate();
-    birthByMonthDay[`${month + 1}-${day}`] ||= {x: month + 1, y: day, v: 0};
-    birthByMonthDay[`${month + 1}-${day}`].v += 1;
-})
-
-const subjectCounts = {};
-Object.values(allData).forEach(user => {
-    const subject = user.favoriteSubject;
-    if (subject) {
-        subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
-    }
-});
-
-const screenTimeBins = [0, 0, 0, 0, 0, 0]; // bins: 0-1, 1-2, 2-3, ..., 5+
-Object.values(allData).forEach(user => {
-    const hours = user.screenTimeHours;
-    if (typeof hours === 'number') {
-        if (hours < 1) screenTimeBins[0]++;
-        else if (hours < 2) screenTimeBins[1]++;
-        else if (hours < 3) screenTimeBins[2]++;
-        else if (hours < 4) screenTimeBins[3]++;
-        else if (hours < 5) screenTimeBins[4]++;
-        else screenTimeBins[5]++;
-    }
-});
 
 
 export function showUpdateButton(){
@@ -156,7 +102,7 @@ function updatePopulationData() {
                 labels: heightLabels,
                 datasets: [{
                     label: 'Height in Inches',
-                    data: heightsSplit,
+                    data: heightBins,
                     backgroundColor: '#4e73df'
                 }]
             }
