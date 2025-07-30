@@ -52,7 +52,6 @@ export function attachMatrixChart(canvasEl, data, options = {}){
     if(Chart.getChart(canvasEl)){
         Chart.getChart(canvasEl).destroy();
     };
-    debugger;
     try{
         return new Chart(ctx, {
             type: 'matrix',
@@ -61,6 +60,66 @@ export function attachMatrixChart(canvasEl, data, options = {}){
         })
     } catch(e){
         console.error("Error creating matrix chart:", e);
+        return null;
+    }
+}
+
+export function attachScatterPlot(canvasEl, data, options = {}){
+    if(!canvasEl || !canvasEl.getContext) return;
+    const ctx = canvasEl.getContext('2d');
+
+    if(Chart.getChart(canvasEl)){
+        Chart.getChart(canvasEl).destroy();
+    };
+
+    try{
+        return new Chart(ctx, {
+            type: 'scatter',
+            data,
+            options
+        })
+    } catch(e){
+        console.error("Error creating scatter plot chart:", e);
+        return null;
+    }
+}
+
+export function attachRadarChart(canvasEl, data, options = {}){
+    if(!canvasEl || !canvasEl.getContext) return;
+    const ctx = canvasEl.getContext('2d');
+
+    if(Chart.getChart(canvasEl)){
+        Chart.getChart(canvasEl).destroy();
+    };
+
+    try{
+        return new Chart(ctx, {
+            type: 'radar',
+            data,
+            options
+        })
+    } catch(e){
+        console.error("Error creating radar chart:", e);
+        return null;
+    }
+}
+
+export function attachBoxPlot(canvasEl, data, options = {}){
+    if(!canvasEl || !canvasEl.getContext) return;
+    const ctx = canvasEl.getContext('2d');
+
+    if(Chart.getChart(canvasEl)){
+        Chart.getChart(canvasEl).destroy();
+    };
+
+    try{
+        return new Chart(ctx, {
+            type: 'boxplot',
+            data,
+            options
+        })
+    } catch(e){
+        console.error("Error creating box plot chart:", e);
         return null;
     }
 }

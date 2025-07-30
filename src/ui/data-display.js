@@ -1,6 +1,6 @@
 import { percentile, ranking } from "../util/calculator";
 import Chart from 'chart.js/auto';
-import { attachHistogram, attachMatrixChart } from "./chartFunctions";
+import { attachBoxPlot, attachHistogram, attachMatrixChart, attachRadarChart, attachScatterPlot } from "./chartFunctions";
 
 
 // Raw data from localStorage
@@ -42,6 +42,27 @@ Object.values(allData).forEach((user) => {
     birthByMonthDay[`${month + 1}-${day}`].v += 1;
 })
 
+const subjectCounts = {};
+Object.values(allData).forEach(user => {
+    const subject = user.favoriteSubject;
+    if (subject) {
+        subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
+    }
+});
+
+const screenTimeBins = [0, 0, 0, 0, 0, 0]; // bins: 0-1, 1-2, 2-3, ..., 5+
+Object.values(allData).forEach(user => {
+    const hours = user.screenTimeHours;
+    if (typeof hours === 'number') {
+        if (hours < 1) screenTimeBins[0]++;
+        else if (hours < 2) screenTimeBins[1]++;
+        else if (hours < 3) screenTimeBins[2]++;
+        else if (hours < 4) screenTimeBins[3]++;
+        else if (hours < 5) screenTimeBins[4]++;
+        else screenTimeBins[5]++;
+    }
+});
+
 
 export function showUpdateButton(){
     document.getElementById("updateProfileBtn").classList.remove("d-none");
@@ -77,8 +98,8 @@ function updateMyData(){
             min: 0,
             max: 100,
             ticks: {
-            stepSize: 5,
-            callback: value => `${value}%`,
+                stepSize: 5,
+                callback: value => `${value}%`,
             }
         },
         y: {
@@ -127,27 +148,28 @@ function updatePopulationData() {
     try {
         if (!userData) return;
 
+        // Heights Histogram
         let populationHeightEl = document.getElementById('populationHeightChart');
-        const heightLabels = ['48-54', '55-60', '61-66', '67-72', '73-78'];
-        const data = {
-            labels: heightLabels,
-            datasets: [{
-                label: 'Height in Inches',
-                data: heightsSplit,
-                backgroundColor: '#4e73df'
-            }]
-        }
-        const options = {
-            plugins: {
-                title: { display: true, text: 'Student Heights Histogram' }
-            }
-        }
         if (populationHeightEl) {
+            const heightLabels = ['48-54', '55-60', '61-66', '67-72', '73-78'];
+            const data = {
+                labels: heightLabels,
+                datasets: [{
+                    label: 'Height in Inches',
+                    data: heightsSplit,
+                    backgroundColor: '#4e73df'
+                }]
+            }
+            const options = {
+                plugins: {
+                    title: { display: true, text: 'Student Heights Histogram' }
+                }
+            }
             attachHistogram(populationHeightEl, data, options);
         }
 
+        // Birthdays Matrix
         let populationBirthEl = document.getElementById('populationBirthDateChart');
-
         if(populationBirthEl){
             const options = {
                 responsive: true,
@@ -194,6 +216,170 @@ function updatePopulationData() {
             }
             
             attachMatrixChart(populationBirthEl, data, options);
+        }
+
+        // --- Screen Time vs Sleep Hours Scatter Plot ---
+        const scatterEl = document.getElementById('screenTimeVsSleepChart');
+        if (scatterEl) {
+            const scatterData = Object.values(allData)
+                .filter(user => typeof user.screenTimeHours === 'number' && typeof user.hoursOfSleep === 'number')
+                .map(user => ({
+                    x: user.screenTimeHours,
+                    y: user.hoursOfSleep
+                }));
+
+            const data = {
+                datasets: [{
+                    label: 'Screen Time vs. Sleep Hours',
+                    data: scatterData,
+                    backgroundColor: '#10b981'
+                }]
+            }
+
+            const options = {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Screen Time vs. Sleep Hours'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Screen Time (hours)'
+                        },
+                        min: 0,
+                        max: 12
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Sleep Hours'
+                        },
+                        min: 0,
+                        max: 12
+                    }
+                }
+            }
+
+            attachScatterPlot(scatterEl, data, options);
+        }
+
+                // --- Radar Chart: Favorite Subject Preferences ---
+        const radarEl = document.getElementById('subjectPreferenceChart');
+        if (radarEl) {
+
+            const radarLabels = Object.keys(subjectCounts);
+            const radarData = Object.values(subjectCounts);
+            const data =  {
+                labels: radarLabels,
+                datasets: [{
+                    label: 'Number of Students',
+                    data: radarData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }]
+            }
+
+            const options = {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Favorite Subject Preferences'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true
+                    }
+                }
+            }
+
+            attachRadarChart(radarEl, data, options);
+        }
+
+        // --- Screen Time Histogram ---
+        const screenTimeEl = document.getElementById('screenTimeHistogramChart');
+        if (screenTimeEl) {
+
+            const screenTimeLabels = ['0–1 hr', '1–2 hrs', '2–3 hrs', '3–4 hrs', '4–5 hrs', '5+ hrs'];
+            const data = {
+                labels: screenTimeLabels,
+                datasets: [{
+                    label: 'Number of Students',
+                    data: screenTimeBins,
+                    backgroundColor: '#6366f1'
+                }]
+            }
+
+            const options = {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Screen Time Hours'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }
+            }
+            attachHistogram(screenTimeEl, data, options);
+        }
+
+        // --- Box Plot: Height Distribution ---
+        const heightBoxEl = document.getElementById('heightBoxPlotChart');
+        if (heightBoxEl) {
+            const heightValues = Object.values(allData)
+                .map(user => user.heightInInches)
+                .filter(h => typeof h === 'number');
+
+            const data = {
+                labels: ['Heights'],
+                datasets: [{
+                    label: 'Student Heights',
+                    data: [heightValues],
+                    backgroundColor: 'rgba(132, 132, 255, 0.77)',
+                    borderColor: 'rgba(109, 109, 207, 1)',
+                    borderWidth: 2
+                }]
+            }
+
+            const options = {
+                responsive: true,
+                indexAxis: 'y',
+                scales:{
+                    x: {
+                        max: 78,
+                        min: 54,
+                        ticks:{
+                            stepSize: 6,
+                            callback: function formatHeight(heightInInches) {
+                                const feet = Math.floor(heightInInches / 12);
+                                const inches = Math.round(heightInInches % 12);
+                                return `${feet}'${inches}"`;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Box Plot of Student Heights'
+                    }
+                }
+            }
+
+            if (heightValues.length > 0) {
+                attachBoxPlot(heightBoxEl, data, options);
+            }
         }
     } catch (error) {
         console.error("updateMyData did not work");
