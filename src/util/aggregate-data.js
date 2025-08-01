@@ -1,11 +1,21 @@
 const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
 
-// Arrays 
+// Arrays
 export const heightsArray = Object.values(allData).map(user => user.heightInInches || 0);
+
 export const birthDatesArray = Object.values(allData).map(user => {
-    const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
-    return Number(birthDate);
+  const birthDate = new Date(user.birthDate?.seconds * 1000 || user.birthDate);
+  return Number(birthDate);
 });
+
+export const sleepHoursArray = Object.values(allData).map(user => user.hoursOfSleep || 0);
+
+export const screenTimeArray = Object.values(allData).map(user => user.screenTimeHours || 0);
+
+export const shoeSizeArray = Object.values(allData).map(user => user.shoeSize || 0);
+
+export const foodSpendingArray = Object.values(allData).map(user => user.foodSpending || 0);
+
 
 export const heightBins = [0, 0, 0, 0, 0]; // bins: 48-54, 55-60, 61-66, 67-72, 73-78
 export const screenTimeBins = [0, 0, 0, 0, 0, 0]; // bins: 0-1, 1-2, 2-3, ..., 5+

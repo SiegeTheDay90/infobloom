@@ -91,7 +91,13 @@ signUpForm.onsubmit = async (e) => {
   const motivationalQuote = document.getElementById("signUpMotivationalQuote").value || null;
   const superPower = document.getElementById("signUpSuperpowerChoice").value || null;
 
-  // Optional: password confirmation check
+  // New fields
+  const countriesVisited = parseInt(document.getElementById("signUpCountriesVisited").value) || 0;
+  const siblings = parseInt(document.getElementById("signUpSiblings").value) || 0;
+  const shoeSize = parseFloat(document.getElementById("signUpShoeSize").value) || null;
+  const foodSpending = parseFloat(document.getElementById("signUpFoodSpending").value) || null;
+
+  // Password confirmation check
   const confirmPassword = document.getElementById("signUpConfirmPassword").value;
   if (password !== confirmPassword) {
     alert("Passwords do not match.");
@@ -116,6 +122,10 @@ signUpForm.onsubmit = async (e) => {
     petType,
     motivationalQuote,
     superPower,
+    countriesVisited,
+    siblings,
+    shoeSize,
+    foodSpending,
   };
 
   try {

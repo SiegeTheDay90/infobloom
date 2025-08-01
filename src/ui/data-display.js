@@ -1,6 +1,17 @@
 import { percentile, ranking } from "../util/calculator";
 import { attachBoxPlot, attachHistogram, attachMatrixChart, attachRadarChart, attachScatterPlot } from "./chartFunctions";
-import { heightsArray, birthDatesArray, heightBins, screenTimeBins, birthByMonthDay, subjectCounts } from "../util/aggregate-data";
+import {
+  heightsArray,
+  birthDatesArray,
+  sleepHoursArray,
+  screenTimeArray,
+  shoeSizeArray,
+  foodSpendingArray,
+  heightBins, 
+  screenTimeBins, 
+  birthByMonthDay, 
+  subjectCounts
+} from "../util/aggregate-data";
 
 // Raw data from localStorage
 const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
@@ -21,73 +32,85 @@ export function updateDisplay() {
 }
 
 
-function updateMyData(){
-    if (!userData) return;
-    const heightPercentile = percentile(heightsArray, userData.heightInInches || 0);
-    const heightPercentileEl = document.getElementById("myHeightChart");
-   const data = {
-        labels: ['Height Percentile'],
-        datasets: [{
-            label: 'Percentile',
-            data: [Math.round(heightPercentile)],
-            backgroundColor: '#5a60ffff',
-            borderSkipped: false,
-            barPercentage: 1.0,
-            categoryPercentage: 1.0,
-        }]
-    }
+function updateMyData() {
+  if (!userData) return;
+
+  // Shared chart generator
+  const drawPercentileChart = (value, array, elementId, label) => {
+    const percentileValue = percentile(array, value || 0);
+    const canvasEl = document.getElementById(elementId);
+    if (!canvasEl) return;
+
+    const rounded = Math.round(percentileValue);
+    const data = {
+      labels: [`${label} Percentile`],
+      datasets: [{
+        label: 'Percentile',
+        data: [rounded],
+        backgroundColor: '#5a60ffff',
+        borderSkipped: false,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0,
+      }]
+    };
     const options = {
-        indexAxis: 'y',
-        responsive: true,
-        scales: {
+      indexAxis: 'y',
+      responsive: true,
+      scales: {
         x: {
-            min: 0,
-            max: 100,
-            ticks: {
-                stepSize: 5,
-                callback: value => `${value}%`,
-            }
+          min: 0,
+          max: 100,
+          ticks: {
+            stepSize: 5,
+            callback: value => `${value}%`,
+          }
         },
-        y: {
-            display: false
-        }
-        },
-        plugins: {
+        y: { display: false }
+      },
+      plugins: {
         annotation: {
-            annotations: {
+          annotations: {
             studentMarker: {
-                type: 'line',
-                xMin: heightPercentile,
-                xMax: heightPercentile,
-                borderColor: 'blue',
-                borderWidth: 2,
-                label: {
+              type: 'line',
+              xMin: rounded,
+              xMax: rounded,
+              borderColor: 'blue',
+              borderWidth: 2,
+              label: {
                 enabled: true,
-                content: `${heightPercentile}th`,
+                content: `${rounded}th`,
                 position: 'start',
                 backgroundColor: 'blue',
                 color: 'white'
-                }
+              }
             }
-            }
+          }
         },
         legend: { display: false }
-        }
+      }
+    };
 
-    }
+    attachHistogram(canvasEl, data, options);
+  };
 
-    if(heightPercentileEl){
-        attachHistogram(heightPercentileEl, data, options);
-    }
+  // 🎯 Render Percentile Charts
+  drawPercentileChart(userData.heightInInches, heightsArray, "myHeightPercentile", "Height");
+  drawPercentileChart(userData.hoursOfSleep, sleepHoursArray, "mySleepPercentile", "Sleep");
+  drawPercentileChart(userData.screenTimeHours, screenTimeArray, "myScreenTimePercentile", "Screen Time");
+  drawPercentileChart(userData.shoeSize, shoeSizeArray, "myShoeSizePercentile", "Shoe Size");
+  drawPercentileChart(userData.foodSpending, foodSpendingArray, "myFoodSpendingPercentile", "Food Spending");
 
-
-
-    const birthDateRanking = ranking(birthDatesArray, Number(new Date(userData.birthDate?.seconds * 1000 || userData.birthDate)));
-    const birthDayEl = document.getElementById("myBirthDateChart");
-    if(birthDayEl){
-        birthDayEl.innerText = `Your birthday is ranked #${birthDateRanking} oldest out of ${birthDatesArray.length} users.`;
-    }
+  // 🎂 Birthday Ranking
+  const birthTimestamp = userData.birthDate?.seconds
+    ? userData.birthDate.seconds * 1000
+    : new Date(userData.birthDate).getTime();
+  const birthDateRanking = ranking(birthDatesArray, birthTimestamp);
+  const birthDayEl = document.getElementById("myBirthDateRank");
+  if (birthDayEl) {
+    birthDayEl.innerText = `Your birthday is ranked #${birthDateRanking} oldest out of ${birthDatesArray.length} users.`;
+  }
 }
+
 
 
 function updatePopulationData() {
@@ -334,89 +357,92 @@ function updatePopulationData() {
 }
 
 function updateMyProfile() {
-    try {
-        const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
+  try {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
 
-        const currentUser = localStorage.getItem("InfoBloomUser");
-        const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
-        if (!allData?.[currentUser]) return;
+    const currentUser = localStorage.getItem("InfoBloomUser");
+    const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
+    if (!allData?.[currentUser]) return;
 
-        const userProfile = allData[currentUser];
+    const userProfile = allData[currentUser];
 
-        Object.entries(userProfile).forEach(([key, value]) => {
-            const badge = document.querySelector(`#${key}`);
-            if (!badge) return;
+    Object.entries(userProfile).forEach(([key, value]) => {
+      const badge = document.querySelector(`#${key}`);
+      if (!badge) return;
 
-            const contentEl = badge.querySelector(".badge-content");
-            const formEl = badge.querySelector(".badge-form");
-            const editButton = badge.querySelector(".editBadgeBtn") || {};
-            const formInput = formEl.querySelector("input, select") || {};
-            editButton.onclick = (e) => {
-                contentEl.classList.add("d-none");
-                formEl.classList.remove("d-none");
-                editButton.classList.add("d-none");
-                showUpdateButton();
-            }
-            formInput.oninput = (e) => {
-                if(e.target.value){
-                    showUpdateButton();
-                }
-            }
+      const contentEl = badge.querySelector(".badge-content");
+      const formEl = badge.querySelector(".badge-form");
+      const editButton = badge.querySelector(".editBadgeBtn") || {};
+      const formInput = formEl.querySelector("input, select, textarea") || {};
 
-            if (value !== undefined && value !== null && value !== "") {
-            // Show the value
-            editButton.classList.remove("d-none");
-            contentEl.classList.remove("d-none");
-            if (key === "birthDate") {
-                const birthDate = new Date(value);
-                contentEl.innerText = `${months[birthDate.getMonth()]} ${birthDate.getDate()}`;
-            } else if (Array.isArray(value)) {
-                contentEl.innerText = value.join(", ");
-                formInput.value = value.join(", ");
-            } else if (typeof value === "boolean") {
-                contentEl.innerText = value ? "Yes" : "No";
-                formInput.value = value ? "Yes" : "No";
-            } else {
-                contentEl.innerText = value;
-                formInput.value = value;
-            }
-            formEl?.classList.add("d-none"); // keep form hidden
-            } else {
-            contentEl.innerText = "Not answered yet.";
-            editButton.classList?.add("d-none");
-            formEl?.classList?.remove("d-none"); // show form for editing
-            }
-        });
+      // Handle Edit button click
+      editButton.onclick = () => {
+        contentEl.classList.add("d-none");
+        formEl.classList.remove("d-none");
+        editButton.classList.add("d-none");
+        showUpdateButton();
+      };
 
+      // Show Update button if any input changes
+      formInput.oninput = () => showUpdateButton();
 
-        const fullName = `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim();
-        const fullNameBadge = document.querySelector("#fullName");
-        const contentEl = fullNameBadge.querySelector(".badge-content");
-        contentEl.innerText = fullName || "Not answered yet.";
-        const firstNameInput = document.querySelector("#firstNameInput");
-        const lastNameInput = document.querySelector("#lastNameInput");
-        firstNameInput.value = userProfile.firstName || "";
-        lastNameInput.value = userProfile.lastName || "";
-        const fullNameForm = fullNameBadge.querySelector("form");
-
-        const editButton = fullNameBadge.querySelector(".editBadgeBtn") || {};
-        contentEl.classList.remove("d-none");
-        fullNameForm.classList.add("d-none");
+      // Display the value or switch to edit mode if empty
+      if (value !== undefined && value !== null && value !== "") {
         editButton.classList.remove("d-none");
+        contentEl.classList.remove("d-none");
 
-        editButton.onclick = (e) => {
-            contentEl.classList.add("d-none");
-            fullNameForm.classList.remove("d-none");
-            editButton.classList.add("d-none");
-            showUpdateButton();
+        if (key === "birthDate") {
+          const birthDate = new Date(value);
+          contentEl.innerText = `${months[birthDate.getMonth()]} ${birthDate.getDate()}`;
+          formInput.valueAsDate = birthDate;
+        } else if (Array.isArray(value)) {
+          contentEl.innerText = value.join(", ");
+          formInput.value = value.join(", ");
+        } else if (typeof value === "boolean") {
+          contentEl.innerText = value ? "Yes" : "No";
+          formInput.value = String(value); // Set as "true" or "false"
+        } else {
+          contentEl.innerText = value;
+          formInput.value = value;
         }
 
-  
-    } catch (error) {
-      console.error("updateDisplay did not work");
-      throw error;
-    }
+        formEl?.classList.add("d-none");
+      } else {
+        contentEl.innerText = "Not answered yet.";
+        editButton.classList?.add("d-none");
+        formEl?.classList?.remove("d-none");
+      }
+    });
+
+    // Full Name special handling
+    const fullName = `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim();
+    const fullNameBadge = document.querySelector("#fullName");
+    const contentEl = fullNameBadge.querySelector(".badge-content");
+    contentEl.innerText = fullName || "Not answered yet.";
+
+    const firstNameInput = document.querySelector("#firstNameInput");
+    const lastNameInput = document.querySelector("#lastNameInput");
+    firstNameInput.value = userProfile.firstName || "";
+    lastNameInput.value = userProfile.lastName || "";
+
+    const fullNameForm = fullNameBadge.querySelector("form");
+    const editButton = fullNameBadge.querySelector(".editBadgeBtn") || {};
+    contentEl.classList.remove("d-none");
+    fullNameForm.classList.add("d-none");
+    editButton.classList.remove("d-none");
+
+    editButton.onclick = () => {
+      contentEl.classList.add("d-none");
+      fullNameForm.classList.remove("d-none");
+      editButton.classList.add("d-none");
+      showUpdateButton();
+    };
+
+  } catch (error) {
+    console.error("updateMyProfile() error:", error);
+    throw error;
+  }
 }

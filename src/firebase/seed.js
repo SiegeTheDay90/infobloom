@@ -36,7 +36,7 @@ function generateFakeUser(index) {
   const year = 2009 + Math.floor(Math.random() * 3);
   const month = 1 + Math.floor(Math.random() * 12);
   const day = 1 + Math.floor(Math.random() * 28);
-  const birthDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const birthDate = new Date(`${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
 
   const hasPets = Math.random() < 0.5;
   const petType = hasPets ? getRandomItem(petTypes) : "";
@@ -47,19 +47,25 @@ function generateFakeUser(index) {
     firstName,
     lastName,
     preferredName: firstName,
-    birthDate: new Date(birthDate),
+    birthDate,
     classPeriod: String(1 + Math.floor(Math.random() * 7)),
     heightInInches: 55 + Math.floor(Math.random() * 21),
     hoursOfSleep: +(5 + Math.random() * 5).toFixed(1),
-    favoriteSubject: getRandomItem(subjects),
     screenTimeHours: +(1 + Math.random() * 6).toFixed(1),
+    favoriteSubject: getRandomItem(subjects),
     careerInterest: getRandomItem(careers),
     favoriteSocialMedia: getRandomItem(socialMedia),
     languagesSpoken: getRandomSubset(languages),
     hasPets,
     petType,
     motivationalQuote: getRandomItem(quotes),
-    superpowerChoice: getRandomItem(superpowers)
+    superpowerChoice: getRandomItem(superpowers),
+
+    // 🆕 New Fields
+    countriesVisited: Math.floor(Math.random() * 11), // 0–10
+    siblings: Math.floor(Math.random() * 6),           // 0–5
+    shoeSize: +(4.5 + Math.random() * 7.5).toFixed(1), // ~4.5–12.0
+    foodSpending: Math.floor(25 + Math.random() * 125) // $25–$150
   };
 }
 

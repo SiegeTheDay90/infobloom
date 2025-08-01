@@ -180,9 +180,42 @@
         </label>
         <input class="form-control" type="text" id="signUpSuperpowerChoice" />
       </div>
-    
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="signUpShoeSize">
+            Shoe Size
+            <span class="ms-1" data-bs-toggle="tooltip" title="For women’s shoe sizes, subtract 1.5.">�</span>
+          </label>
+          <input class="form-control" type="number" step="0.5" min="1" id="signUpShoeSize" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="signUpFoodSpending">
+            Weekly Food Spending
+            <span class="ms-1" data-bs-toggle="tooltip" title="Estimate how much you spend on food each week.">�</span>
+          </label> 
+          <input class="form-control" type="number" step="1" min="0" id="signUpFoodSpending" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="signUpCountriesVisited">
+            How Many Countries Have You Visited?
+            <span class="ms-1" data-bs-toggle="tooltip" title="Just your best guess!">�</span>
+          </label>
+          <input class="form-control" type="number" id="signUpCountriesVisited" min="0" />
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <label for="signUpSiblings">
+            How Many Siblings Do You Have?
+            <span class="ms-1" data-bs-toggle="tooltip" title="Biological, step, or adopted siblings all count.">�</span>
+          </label>
+          <input class="form-control" type="number" id="signUpSiblings" min="0" />
+        </div>
+      </div>
+      
       <hr class="my-4" />
-    
       <div class="mb-3">
         <label for="signUpEmail">Email <span class="text-danger">*</span></label>
         <input class="form-control" type="email" id="signUpEmail" required />

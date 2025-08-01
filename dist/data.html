@@ -43,8 +43,9 @@
 </head>
 <body class="bg-light">
 
-    <header class="py-3 bg-white shadow-sm mb-4">
+    <header class="py-3 bg-white shadow-sm">
         <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <h1 class="text-center">InfoBloom</h1>
             <!-- Nav Buttons -->
             <div class="btn-group mb-2 mb-md-0" role="group">
                 <button id="showMyProfile" class="btn btn-outline-primary">My Profile</button>
@@ -57,8 +58,6 @@
     </header>
 
     <div class="container">
-        <h1 class="text-center mb-4">InfoBloom</h1>
-
         <div id="myProfile" class="main">
             <h3 class="mb-2">My Profile</h3>
             <h5 class="text-muted mb-4">View and edit your profile.</h5>
@@ -296,7 +295,65 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Countries Visited -->
+                <div id="countriesVisited" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body position-relative">
+                            <h5 class="badge-header card-title">Countries Visited</h5>
+                            <span class="badge-content card-text">Loading...</span>
+                            <form class="badge-form d-none mt-2">
+                                <input class="form-control" type="number" min="0" name="countriesVisited" placeholder="How many countries?">
+                            </form>
+                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Siblings -->
+                <div id="siblings" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body position-relative">
+                            <h5 class="badge-header card-title">Siblings</h5>
+                            <span class="badge-content card-text">Loading...</span>
+                            <form class="badge-form d-none mt-2">
+                                <input class="form-control" type="number" min="0" name="siblings" placeholder="How many siblings?">
+                            </form>
+                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Shoe Size -->
+                <div id="shoeSize" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body position-relative">
+                            <h5 class="badge-header card-title">Shoe Size</h5>
+                            <span class="badge-content card-text">Loading...</span>
+                            <form class="badge-form d-none mt-2">
+                                <input class="form-control" type="number" step="0.5" min="1" name="shoeSize" placeholder="Shoe Size">
+                            </form>
+                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Weekly Food Spending -->
+                <div id="foodSpending" class="profile-badge col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body position-relative">
+                            <h5 class="badge-header card-title">Weekly Food Spending ($)</h5>
+                            <span class="badge-content card-text">Loading...</span>
+                            <form class="badge-form d-none mt-2">
+                                <input class="form-control" type="number" step="1" min="0" name="foodSpending" placeholder="e.g. 50">
+                            </form>
+                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
         
             <button id="updateProfileBtn" class="btn btn-primary d-none position-fixed bottom-0 end-0 m-4 shadow">
                 Update Profile
@@ -312,7 +369,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Height</h5>
-                            <canvas id="myHeightChart" class="badge-content card-text">Loading...</canvas>
+                            <canvas id="myHeightPercentile" class="badge-content card-text">Loading...</canvas>
                         </div>
                     </div>
                 </div>
@@ -320,7 +377,42 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Birthday</h5>
-                            <span id="myBirthDateChart" class="badge-content card-text">Loading...</span>
+                            <span id="myBirthDateRank" class="badge-content card-text">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="mySleep" class="data-badge percentile col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Sleep</h5>
+                            <canvas id="mySleepPercentile" class="badge-content card-text">Loading...</canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="myScreenTime" class="data-badge percentile col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Screen Time</h5>
+                            <canvas id="myScreenTimePercentile" class="badge-content card-text">Loading...</canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="myShoeSize" class="data-badge percentile col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Shoe Size</h5>
+                            <canvas id="myShoeSizePercentile" class="badge-content card-text">Loading...</canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="myFoodSpending" class="data-badge percentile col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="badge-header card-title">Food Spending</h5>
+                            <canvas id="myFoodSpendingPercentile" class="badge-content card-text">Loading...</canvas>
                         </div>
                     </div>
                 </div>
