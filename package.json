@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@sgratzl/chartjs-chart-boxplot": "^4.4.4",
+    "bad-words": "^4.0.0",
     "chart.js": "^4.5.0",
     "chartjs-chart-box-and-violin-plot": "^4.0.0",
     "chartjs-chart-matrix": "^3.0.0",

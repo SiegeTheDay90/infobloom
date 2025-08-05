@@ -1,4 +1,5 @@
 import * as auth from "../firebase/authFunctions.js";
+import { sanitizeAndCheckProfanity } from "../util/profanity-checker.js";
 
 // Toggle Forms
 const forms = {
@@ -96,6 +97,25 @@ signUpForm.onsubmit = async (e) => {
   const siblings = parseInt(document.getElementById("signUpSiblings").value) || 0;
   const shoeSize = parseFloat(document.getElementById("signUpShoeSize").value) || null;
   const foodSpending = parseFloat(document.getElementById("signUpFoodSpending").value) || null;
+
+
+  // ❗ Profanity validation using bad-words
+  const textFields = {
+    firstName,
+    lastName,
+    careerInterest,
+    languagesSpoken,
+    petType,
+    motivationalQuote,
+    superPower
+  };
+
+  for (const [fieldName, textValue] of Object.entries(textFields)) {
+    if (textValue && sanitizeAndCheckProfanity(textValue)) {
+      alert(`Inappropriate language detected in your ${fieldName}. Please revise.`);
+      return;
+    }
+  }
 
   // Password confirmation check
   const confirmPassword = document.getElementById("signUpConfirmPassword").value;
