@@ -59,7 +59,7 @@ function generateFakeUser(index) {
     hasPets,
     petType,
     motivationalQuote: getRandomItem(quotes),
-    superpowerChoice: getRandomItem(superpowers),
+    superpower: getRandomItem(superpowers),
 
     // 🆕 New Fields
     countriesVisited: Math.floor(Math.random() * 11), // 0–10

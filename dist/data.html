@@ -51,6 +51,7 @@
                 <button id="showMyProfile" class="btn btn-outline-primary">My Profile</button>
                 <button id="showMyData" class="btn btn-outline-primary">My Data</button>
                 <button id="showPopulationData" class="btn btn-outline-primary active">Population Data</button>
+                <button id="showWordClouds" class="btn btn-outline-primary">Word Clouds</button>
                 <button id="signOutButton" class="btn btn-outline-danger">Log Out</button>
             </div>
             <button id="forceRefresh" class="btn btn-outline-secondary">Refresh Data 🔄</button>
@@ -59,7 +60,7 @@
 
     <div class="container">
         <div id="myProfile" class="main">
-            <h3 class="mb-2">My Profile</h3>
+            <h3 class="mb-2 mt-4">My Profile</h3>
             <h5 class="text-muted mb-4">View and edit your profile.</h5>
             <div id="myProfileContainer" class="row gy-4">
           
@@ -475,6 +476,35 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="wordClouds" class="main">
+            <h3 class="mt-4 mb-2">Word Clouds</h3>
+            <h5 class="text-muted mb-4">Visualize common responses from everyone.</h5>
+
+            <div id="wordCloudsContainer" class="row gy-4">
+            <!-- Superpower Word Cloud -->
+            <div id="wordCloudSuperPower" class="data-badge wordcloud col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="badge-header card-title">Superpowers</h5>
+                        <canvas id="superPowerWordCloud" class="badge-content card-text">Loading...</canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Word Clouds (Career Interest, Languages, Quotes, etc.) can be added similarly -->
+            <!-- Example:
+            <div id="wordCloudCareerInterest" class="data-badge wordcloud col-md-12">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="badge-header card-title">Career Interests</h5>
+                  <canvas id="careerInterestWordCloud" width="600" height="400" class="badge-content card-text">Loading...</canvas>
+                </div>
+              </div>
+            </div>
+            -->
             </div>
         </div>
     </div>

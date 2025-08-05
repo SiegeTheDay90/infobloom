@@ -13,6 +13,8 @@ import {
   subjectCounts
 } from "../util/aggregate-data";
 
+import { attachWordCloud } from "../util/word-cloud.js";
+
 // Raw data from localStorage
 const allData = JSON.parse(localStorage.getItem("InfoBloomData")) || {};
 const currentUser = localStorage.getItem("InfoBloomUser");
@@ -29,8 +31,18 @@ export function updateDisplay() {
     updateMyProfile();
     updateMyData();
     updatePopulationData();
+    updateWordClouds();
 }
 
+function updateWordClouds() {
+  const superPowerCanvas = document.getElementById("superPowerWordCloud");
+  if (superPowerCanvas) {
+    let superPowerData = Object.values(allData).map(user => user?.superpower);
+    // debugger;
+    console.log("Super Power Data");
+    attachWordCloud(superPowerCanvas, superPowerData);
+  }
+}
 
 function updateMyData() {
   if (!userData) return;
@@ -100,7 +112,7 @@ function updateMyData() {
   drawPercentileChart(userData.shoeSize, shoeSizeArray, "myShoeSizePercentile", "Shoe Size");
   drawPercentileChart(userData.foodSpending, foodSpendingArray, "myFoodSpendingPercentile", "Food Spending");
 
-  // 🎂 Birthday Ranking
+  // Birthday Ranking
   const birthTimestamp = userData.birthDate?.seconds
     ? userData.birthDate.seconds * 1000
     : new Date(userData.birthDate).getTime();
@@ -116,7 +128,7 @@ function updateMyData() {
 function updatePopulationData() {
     try {
         if (!userData) return;
-
+        
         // Heights Histogram
         let populationHeightEl = document.getElementById('populationHeightChart');
         if (populationHeightEl) {

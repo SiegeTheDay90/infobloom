@@ -15,7 +15,7 @@ const userInfoTypes = `{
     "hasPets": Boolean,
     "petType": String,
     "motivationalQuote": String,
-    "superpowerChoice": String
+    "superpower": String
 }`;
 
 const userInfo = {
@@ -37,7 +37,7 @@ const userInfo = {
     "hasPets": true,
     "petType": "Dog",
     "motivationalQuote": "Learning is a superpower!",
-    "superpowerChoice": "Time travel"
+    "superpower": "Time travel"
 };
 
 export default userInfo;

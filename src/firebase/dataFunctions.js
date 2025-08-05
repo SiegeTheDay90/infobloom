@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, getFirestore, setDoc, collection, query, where, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc, collection, query, where, getDocs, serverTimestamp, updateDoc, getDocsFromServer } from "firebase/firestore";
 import firebaseConfig from "./firebaseConfig";
 
 const app = initializeApp(firebaseConfig);
@@ -51,7 +51,7 @@ export async function updateStoredData(){
 
 export async function getAllData(){
     const collectionRef = collection(db, "users");
-    const snapshot = await getDocs(collectionRef);
+    const snapshot = await getDocsFromServer(collectionRef);
     const allData = {};
     snapshot.forEach(doc => {
         const data = doc.data();

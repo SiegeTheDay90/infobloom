@@ -93,7 +93,7 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         // redirect if not on data page
-        if(window.location.href.slice(-9) !== "data.html"){
+        if(window.location.href.split("/").at(-1).split("#")[0] !== "data.html"){
             // setTimeout(() => 
                 window.location.replace("./data.html")
             // , 500);

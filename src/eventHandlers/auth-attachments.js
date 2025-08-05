@@ -90,7 +90,7 @@ signUpForm.onsubmit = async (e) => {
   const petType = hasPets ? document.getElementById("signUpPetType").value : null;
 
   const motivationalQuote = document.getElementById("signUpMotivationalQuote").value || null;
-  const superPower = document.getElementById("signUpSuperpowerChoice").value || null;
+  const superpower = document.getElementById("signUpSuperpowerChoice").value || null;
 
   // New fields
   const countriesVisited = parseInt(document.getElementById("signUpCountriesVisited").value) || 0;
@@ -107,7 +107,7 @@ signUpForm.onsubmit = async (e) => {
     languagesSpoken,
     petType,
     motivationalQuote,
-    superPower
+    superpower
   };
 
   for (const [fieldName, textValue] of Object.entries(textFields)) {
@@ -141,7 +141,7 @@ signUpForm.onsubmit = async (e) => {
     hasPets,
     petType,
     motivationalQuote,
-    superPower,
+    superpower,
     countriesVisited,
     siblings,
     shoeSize,
