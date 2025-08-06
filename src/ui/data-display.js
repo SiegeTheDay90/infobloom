@@ -38,9 +38,12 @@ function updateWordClouds() {
   const superPowerCanvas = document.getElementById("superPowerWordCloud");
   if (superPowerCanvas) {
     let superPowerData = Object.values(allData).map(user => user?.superpower);
-    // debugger;
-    console.log("Super Power Data");
     attachWordCloud(superPowerCanvas, superPowerData);
+  }
+  const careerInterestCanvas = document.getElementById("careerInterestWordCloud");
+  if (careerInterestCanvas) {
+    let careerInterestData = Object.values(allData).map(user => user?.careerInterest);
+    attachWordCloud(careerInterestCanvas, careerInterestData);
   }
 }
 

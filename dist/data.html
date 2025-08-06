@@ -30,6 +30,10 @@
             opacity: 1;
         }
 
+        .percentile canvas{
+            max-height: 100px;
+        }
+
     </style>
     <script defer>
         // Chart.register(
@@ -366,7 +370,7 @@
             <h3 class="mt-4 mb-2">My Data</h3>
             <h5 class="text-muted mb-4">Visualize your personal data.</h5>
             <div id="myDataContainer" class="row gy-4">
-                <div id="myHeight" class="data-badge percentile col-md-6">
+                <div id="myHeight" class="data-badge percentile col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Height</h5>
@@ -374,7 +378,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="myBirthDate" class="data-badge heatmap col-md-6">
+                <div id="myBirthDate" class="data-badge col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Birthday</h5>
@@ -382,7 +386,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="mySleep" class="data-badge percentile col-md-6">
+                <div id="mySleep" class="data-badge percentile col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Sleep</h5>
@@ -391,7 +395,7 @@
                     </div>
                 </div>
 
-                <div id="myScreenTime" class="data-badge percentile col-md-6">
+                <div id="myScreenTime" class="data-badge percentile col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Screen Time</h5>
@@ -400,7 +404,7 @@
                     </div>
                 </div>
 
-                <div id="myShoeSize" class="data-badge percentile col-md-6">
+                <div id="myShoeSize" class="data-badge percentile col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Shoe Size</h5>
@@ -409,7 +413,7 @@
                     </div>
                 </div>
 
-                <div id="myFoodSpending" class="data-badge percentile col-md-6">
+                <div id="myFoodSpending" class="data-badge percentile col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="badge-header card-title">Food Spending</h5>
@@ -484,28 +488,25 @@
             <h5 class="text-muted mb-4">Visualize common responses from everyone.</h5>
 
             <div id="wordCloudsContainer" class="row gy-4">
-            <!-- Superpower Word Cloud -->
+
             <div id="wordCloudSuperPower" class="data-badge wordcloud col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="badge-header card-title">Superpowers</h5>
-                        <canvas id="superPowerWordCloud" class="badge-content card-text">Loading...</canvas>
+                        <canvas id="superPowerWordCloud" class="badge-content card-text w-100">Loading...</canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- More Word Clouds (Career Interest, Languages, Quotes, etc.) can be added similarly -->
-            <!-- Example:
-            <div id="wordCloudCareerInterest" class="data-badge wordcloud col-md-12">
+            <div id="wordCloudCareerInterest" class="data-badge wordcloud col-md-6">
               <div class="card shadow-sm">
                 <div class="card-body">
                   <h5 class="badge-header card-title">Career Interests</h5>
-                  <canvas id="careerInterestWordCloud" width="600" height="400" class="badge-content card-text">Loading...</canvas>
+                  <canvas id="careerInterestWordCloud" class="badge-content card-text w-100">Loading...</canvas>
                 </div>
               </div>
             </div>
-            -->
-            </div>
+
         </div>
     </div>
     <script src="main.js" type="module"></script>

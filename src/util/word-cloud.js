@@ -1,4 +1,5 @@
 import WordCloud from 'wordcloud';
+import { groupByCount } from './aggregate-data';
 
 /**
  * Attach a word cloud to a canvas using wordcloud.js
@@ -10,7 +11,6 @@ export function attachWordCloud(canvasEl, dataList) {
     console.warn("attachWordCloud: Invalid canvas or data list.");
     return;
   }
-  // debugger;
 
   dataList = groupByCount(dataList);
   return new WordCloud(canvasEl, {
@@ -26,15 +26,3 @@ export function attachWordCloud(canvasEl, dataList) {
   });
 }
 
-function groupByCount(wordList) {
-  let counts = {};
-    wordList.forEach((word) => {
-        if (counts[word]) {
-          counts[word] += 1;
-        } else {
-          counts[word] = 1;
-        }
-    })
-
-    return Object.entries(counts);
-}

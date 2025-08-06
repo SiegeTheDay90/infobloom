@@ -58,3 +58,16 @@ Object.values(allData).forEach((user) => {
         else screenTimeBins[5]++;
     }
 });
+
+export function groupByCount(wordList) {
+  let counts = {};
+    wordList.forEach((word) => {
+        if (counts[word]) {
+          counts[word] += 1;
+        } else {
+          counts[word] = 1;
+        }
+    })
+
+    return Object.entries(counts);
+}
