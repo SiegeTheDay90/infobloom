@@ -1,514 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <!-- Core Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- BoxPlot Plugin -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4.3.0/dist/chartjs-chart-box-and-violin-plot.min.js"></script> -->
-
-    <!-- Matrix Plugin for Heatmaps -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.3.0/dist/chartjs-chart-matrix.min.js"></script> -->
-
-    <title>InfoBloom</title>
-    <style>
-        .main {
-            display: none;
-        }
-        .main.active {
-            display: block;
-        }
-        .editBadgeBtn {
-            opacity: 0.1;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .profile-badge:hover .editBadgeBtn {
-            opacity: 1;
-        }
-
-        .percentile canvas{
-            max-height: 100px;
-        }
-
-    </style>
-    <script defer>
-        // Chart.register(
-        //     ChartBoxPlot.BoxPlotController,
-        //     ChartBoxPlot.BoxAndWhiskers,
-        //     ChartBoxPlot.BoxPlotElement,
-        //     ChartBoxPlot.ViolinPlotController,
-        //     ChartBoxPlot.ViolinPlotElement
-        // );
-    </script>
+  <meta charset="UTF-8">
+  <title>InfoBloom Overhaul</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .main {
+      display: none;
+    }
+    .main.active {
+      display: block;
+    }
+    .data-badge canvas, .data-badge span {
+      display: block;
+      width: 100%;
+      height: 200px;
+    }
+  </style>
 </head>
 <body class="bg-light">
 
-    <header class="py-3 bg-white shadow-sm">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center">
-            <h1 class="text-center">InfoBloom</h1>
-            <!-- Nav Buttons -->
-            <div class="btn-group mb-2 mb-md-0" role="group">
-                <button id="showMyProfile" class="btn btn-outline-primary">My Profile</button>
-                <button id="showMyData" class="btn btn-outline-primary">My Data</button>
-                <button id="showPopulationData" class="btn btn-outline-primary active">Population Data</button>
-                <button id="showWordClouds" class="btn btn-outline-primary">Word Clouds</button>
-                <button id="signOutButton" class="btn btn-outline-danger">Log Out</button>
-            </div>
-            <button id="forceRefresh" class="btn btn-outline-secondary">Refresh Data 🔄</button>
-        </div>
-    </header>
-
-    <div class="container">
-        <div id="myProfile" class="main">
-            <h3 class="mb-2 mt-4">My Profile</h3>
-            <h5 class="text-muted mb-4">View and edit your profile.</h5>
-            <div id="myProfileContainer" class="row gy-4">
-          
-                <!-- Full Name -->
-                <div id="fullName" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Full Name</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control mb-2" id="firstNameInput" type="text" placeholder="First Name" name="firstName">
-                                <input class="form-control" id="lastNameInput" type="text" placeholder="Last Name" name="lastName">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Preferred Name -->
-                <div id="preferredName" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Preferred Name</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="text" placeholder="Preferred Name" name="preferredName">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Birthdate -->
-                <div id="birthDate" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Birthday</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="date" name="birthDate">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Class Period -->
-                <div id="mathPeriod" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Math Period</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" min="1" max="7" name="mathPeriod" placeholder="Math Period">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Height -->
-                <div id="heightInInches" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Height (inches)</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" name="heightInInches" placeholder="Height in Inches">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Hours of Sleep -->
-                <div id="hoursOfSleep" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Hours of Sleep</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" step="0.5" name="hoursOfSleep" placeholder="Hours of Sleep">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Favorite Subject -->
-                <div id="favoriteSubject" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Favorite Subject</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <select class="form-select" name="favoriteSubject">
-                                    <option value="" disabled selected>Select Subject</option>
-                                    <option>Math</option>
-                                    <option>Science</option>
-                                    <option>English</option>
-                                    <option>Social Studies</option>
-                                    <option>Physical Education</option>
-                                    <option>Visual Arts</option>
-                                    <option>Performing Arts</option>
-                                    <option>Other</option>
-                                </select>
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Screen Time -->
-                <div id="screenTimeHours" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Screen Time (hrs)</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" step="0.5" name="screenTimeHours" placeholder="Screen Time Hours">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Career Interest -->
-                <div id="careerInterest" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Career Interest</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="text" name="careerInterest" placeholder="Career Interest">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Favorite Social Media -->
-                <div id="favoriteSocialMedia" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Favorite Social Media</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <select class="form-select" name="favoriteSocialMedia">
-                                    <option disabled selected value="">Select Option</option>
-                                    <option>Instagram</option>
-                                    <option>Snapchat</option>
-                                    <option>Twitter</option>
-                                    <option>TikTok</option>
-                                    <option>YouTube</option>
-                                    <option>I don't use social media.</option>
-                                </select>
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Languages Spoken -->
-                <div id="languagesSpoken" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Languages Spoken</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="text" name="languagesSpoken" placeholder="Comma-separated languages">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Pets -->
-                <div id="hasPets" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Do You Have Pets?</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <select class="form-select" name="hasPets">
-                                    <option value="" disabled selected>Select One</option>
-                                    <option value="false">No</option>
-                                    <option value="true">Yes</option>
-                                </select>
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Pet Type -->
-                <div id="petType" class="profile-badge col-md-4 d-none">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Type of Pet</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="text" name="petType" placeholder="Type of Pet">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Motivational Quote -->
-                <div id="motivationalQuote" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Motivational Quote</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <textarea class="form-control" name="motivationalQuote" placeholder="Your favorite quote"></textarea>
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Superpower -->
-                <div id="superPower" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Superpower</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="text" name="superPower" placeholder="Superpower (1–2 words)">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Countries Visited -->
-                <div id="countriesVisited" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Countries Visited</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" min="0" name="countriesVisited" placeholder="How many countries?">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Siblings -->
-                <div id="siblings" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Siblings</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" min="0" name="siblings" placeholder="How many siblings?">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-    
-                <!-- Shoe Size -->
-                <div id="shoeSize" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Shoe Size</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" step="0.5" min="1" name="shoeSize" placeholder="Shoe Size">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-    
-                <!-- Weekly Food Spending -->
-                <div id="foodSpending" class="profile-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="badge-header card-title">Weekly Food Spending ($)</h5>
-                            <span class="badge-content card-text">Loading...</span>
-                            <form class="badge-form d-none mt-2">
-                                <input class="form-control" type="number" step="1" min="0" name="foodSpending" placeholder="e.g. 50">
-                            </form>
-                            <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        
-            <button id="updateProfileBtn" class="btn btn-primary d-none position-fixed bottom-0 end-0 m-4 shadow">
-                Update Profile
-            </button>       
-        </div>
-          
-
-        <div id="myData" class="main">
-            <h3 class="mt-4 mb-2">My Data</h3>
-            <h5 class="text-muted mb-4">Visualize your personal data.</h5>
-            <div id="myDataContainer" class="row gy-4">
-                <div id="myHeight" class="data-badge percentile col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Height</h5>
-                            <canvas id="myHeightPercentile" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-                <div id="myBirthDate" class="data-badge col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Birthday</h5>
-                            <span id="myBirthDateRank" class="badge-content card-text">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                <div id="mySleep" class="data-badge percentile col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Sleep</h5>
-                            <canvas id="mySleepPercentile" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="myScreenTime" class="data-badge percentile col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Screen Time</h5>
-                            <canvas id="myScreenTimePercentile" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="myShoeSize" class="data-badge percentile col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Shoe Size</h5>
-                            <canvas id="myShoeSizePercentile" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="myFoodSpending" class="data-badge percentile col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Food Spending</h5>
-                            <canvas id="myFoodSpendingPercentile" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="populationData" class="main active">
-            <h3 class="mt-4 mb-2">Population Data</h3>
-            <h5 class="text-muted mb-4">Visualize data from across the school.</h5>
-            <div id="populationDataContainer" class="row gy-4">
-                <div id="populationHeight" class="data-badge histogram col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Height</h5>
-                            <canvas id="populationHeightChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                
-                <div id="populationBirthDate" class="data-badge heatmap col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Birthday</h5>
-                            <canvas id="populationBirthDateChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="screenTimeVsSleep" class="data-badge scatter col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Screen Time vs. Sleep Hours</h5>
-                            <canvas id="screenTimeVsSleepChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="subjectPreference" class="data-badge radar col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Favorite Subject Preferences</h5>
-                            <canvas id="subjectPreferenceChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-                <div id="screenTimeHistogram" class="data-badge histogram col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Screen Time</h5>
-                            <canvas id="screenTimeHistogramChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-                <div id="heightBoxPlot" class="data-badge boxplot col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="badge-header card-title">Box Plot: Heights</h5>
-                            <canvas id="heightBoxPlotChart" class="badge-content card-text">Loading...</canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="wordClouds" class="main">
-            <h3 class="mt-4 mb-2">Word Clouds</h3>
-            <h5 class="text-muted mb-4">Visualize common responses from everyone.</h5>
-
-            <div id="wordCloudsContainer" class="row gy-4">
-
-            <div id="wordCloudSuperPower" class="data-badge wordcloud col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="badge-header card-title">Superpowers</h5>
-                        <canvas id="superPowerWordCloud" class="badge-content card-text w-100">Loading...</canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="wordCloudCareerInterest" class="data-badge wordcloud col-md-6">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <h5 class="badge-header card-title">Career Interests</h5>
-                  <canvas id="careerInterestWordCloud" class="badge-content card-text w-100">Loading...</canvas>
-                </div>
-              </div>
-            </div>
-
-        </div>
+  <header class="py-3 bg-white shadow-sm">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+      <h1>InfoBloom</h1>
+      <div class="btn-group" role="group">
+        <button id="showMyProfile" class="btn btn-outline-primary">My Profile</button>
+        <button id="showMyPercentiles" class="btn btn-outline-primary">My Percentiles</button>
+        <button id="showUnivariate" class="btn btn-outline-primary">Univariate Data</button>
+        <button id="showBivariate" class="btn btn-outline-primary">Bivariate Data</button>
+        <button id="showQualitative" class="btn btn-outline-primary">Qualitative Data</button>
+      </div>
     </div>
-    <script src="main.js" type="module"></script>
+  </header>
+
+  <div class="container mt-4 mb-4">
+    <!-- My Profile -->
+    <div id="myProfile" class="main">
+        <h3 class="mb-3">My Profile</h3>
+        <p class="text-muted mb-4">View and edit your profile information below.</p>
+
+        <div id="myProfileContainer" class="row gy-4">
+
+        <!-- Full Name -->
+        <div id="fullName" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Full Name</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form d-none mt-2">
+                <input class="form-control mb-2" id="firstNameInput" type="text" name="firstName" placeholder="First Name">
+                <input class="form-control" id="lastNameInput" type="text" name="lastName" placeholder="Last Name">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preferred Name -->
+        <div id="preferredName" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Preferred Name</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Birthday -->
+        <div id="birthDate" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Birthday</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="date" class="form-control" name="birthDate">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Math Period -->
+        <div id="mathPeriod" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Math Period</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="number" class="form-control" name="mathPeriod" min="1" max="7" placeholder="Period">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Height -->
+        <div id="heightInInches" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Height (inches)</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="number" class="form-control" name="heightInInches" placeholder="e.g. 60">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hours of Sleep -->
+        <div id="hoursOfSleep" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Sleep (hours)</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="number" step="0.5" class="form-control" name="hoursOfSleep" placeholder="e.g. 7.5">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen Time -->
+        <div id="screenTimeHours" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Screen Time (hours)</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input type="number" step="0.5" class="form-control" name="screenTimeHours" placeholder="e.g. 4">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Favorite Subject -->
+        <div id="favoriteSubject" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Favorite Subject</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <select class="form-select" name="favoriteSubject">
+                  <option value="" disabled selected>Select Subject</option>
+                  <option>Math</option>
+                  <option>Science</option>
+                  <option>English</option>
+                  <option>Social Studies</option>
+                  <option>Physical Education</option>
+                  <option>Visual Arts</option>
+                  <option>Performing Arts</option>
+                  <option>Other</option>
+                </select>
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Interest -->
+        <div id="careerInterest" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Career Interest</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="text" name="careerInterest" placeholder="e.g. Doctor">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Favorite Social Media -->
+        <div id="favoriteSocialMedia" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Favorite Social Media</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <select class="form-select" name="favoriteSocialMedia">
+                  <option disabled selected value="">Select One</option>
+                  <option>Instagram</option>
+                  <option>Snapchat</option>
+                  <option>Twitter</option>
+                  <option>TikTok</option>
+                  <option>YouTube</option>
+                  <option>I don't use social media.</option>
+                </select>
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Languages Spoken -->
+        <div id="languagesSpoken" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Languages Spoken</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="text" name="languagesSpoken" placeholder="Comma-separated languages">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Has Pets -->
+        <div id="hasPets" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Do You Have Pets?</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <select class="form-select" name="hasPets">
+                  <option value="" disabled selected>Select One</option>
+                  <option value="false">No</option>
+                  <option value="true">Yes</option>
+                </select>
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pet Type -->
+        <div id="petType" class="profile-badge col-md-4 d-none">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Type of Pet</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="text" name="petType" placeholder="e.g. Dog">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div id="motivationalQuote" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Motivational Quote</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <textarea class="form-control" name="motivationalQuote" placeholder="Your favorite quote"></textarea>
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Superpower -->
+        <div id="superPower" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Superpower</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="text" name="superPower" placeholder="e.g. Invisibility">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Countries Visited -->
+        <div id="countriesVisited" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Countries Visited</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="number" min="0" name="countriesVisited" placeholder="How many?">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Siblings -->
+        <div id="siblings" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Siblings</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="number" min="0" name="siblings" placeholder="How many siblings?">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shoe Size -->
+        <div id="shoeSize" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Shoe Size</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="number" step="0.5" min="1" name="shoeSize" placeholder="e.g. 8.5">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Food Spending -->
+        <div id="foodSpending" class="profile-badge col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body position-relative">
+              <h5 class="badge-header card-title">Weekly Food Spending ($)</h5>
+              <span class="badge-content card-text">Loading...</span>
+              <form class="badge-form mt-2 d-none">
+                <input class="form-control" type="number" step="1" min="0" name="foodSpending" placeholder="e.g. 50">
+              </form>
+              <button class="btn btn-sm btn-secondary editBadgeBtn d-none position-absolute bottom-0 end-0 mb-2 me-2">Edit</button>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <button id="updateProfileBtn" class="btn btn-primary d-none mt-4">
+        Update Profile
+        </button>
+    </div>
+
+  
+
+    <!-- My Percentiles -->
+    <div id="myPercentiles" class="main">
+      <h3>My Percentiles</h3>
+      <div class="row gy-4">
+        <div class="data-badge col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Height</h5>
+              <canvas id="myHeightPercentile"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Univariate Data -->
+    <div id="univariateData" class="main">
+      <h3>Univariate Data</h3>
+      <div class="row gy-4">
+        <div class="data-badge col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Height Histogram</h5>
+              <canvas id="heightHistogram"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bivariate Data -->
+    <div id="bivariateData" class="main">
+      <h3>Bivariate Data</h3>
+      <div class="row gy-4">
+        <div class="data-badge col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Screen Time vs. Sleep</h5>
+              <canvas id="screenSleepScatter"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Qualitative Data -->
+    <div id="qualitativeData" class="main">
+      <h3>Qualitative Data</h3>
+      <div class="row gy-4">
+        <div class="data-badge col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Superpowers (Word Cloud)</h5>
+              <canvas id="superPowerWordCloud"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuButtons = {
+      myProfile: document.getElementById('showMyProfile'),
+      myPercentiles: document.getElementById('showMyPercentiles'),
+      univariateData: document.getElementById('showUnivariate'),
+      bivariateData: document.getElementById('showBivariate'),
+      qualitativeData: document.getElementById('showQualitative'),
+    };
+
+    const mainDivs = {
+      myProfile: document.getElementById('myProfile'),
+      myPercentiles: document.getElementById('myPercentiles'),
+      univariateData: document.getElementById('univariateData'),
+      bivariateData: document.getElementById('bivariateData'),
+      qualitativeData: document.getElementById('qualitativeData'),
+    };
+
+    function showTab(tabKey) {
+      for (const key in mainDivs) {
+        menuButtons[key].classList.toggle('active', key === tabKey);
+        mainDivs[key].classList.toggle('active', key === tabKey);
+      }
+    }
+
+    Object.entries(menuButtons).forEach(([key, btn]) =>
+      btn.addEventListener('click', () => showTab(key))
+    );
+  </script>
+  <script src="main.js" type="module"></script>
+
 </body>
 </html>

@@ -12,7 +12,6 @@ import {
   birthByMonthDay, 
   subjectCounts
 } from "../util/aggregate-data";
-
 import { attachWordCloud } from "../util/word-cloud.js";
 
 // Raw data from localStorage
@@ -29,9 +28,9 @@ export function showUpdateButton(){
 
 export function updateDisplay() {
     updateMyProfile();
-    updateMyData();
-    updatePopulationData();
-    updateWordClouds();
+    // updateMyData();
+    // updatePopulationData();
+    // updateWordClouds();
 }
 
 function updateWordClouds() {
@@ -385,57 +384,51 @@ function updateMyProfile() {
     const userProfile = allData[currentUser];
 
     Object.entries(userProfile).forEach(([key, value]) => {
+      if (key === "firstName" || key === "lastName") return; // Handled in fullName block
+
       const badge = document.querySelector(`#${key}`);
       if (!badge) return;
 
-      const contentEl = badge.querySelector(".badge-content");
+      let contentEl = badge.querySelector(".badge-content");
       const formEl = badge.querySelector(".badge-form");
-      const editButton = badge.querySelector(".editBadgeBtn") || {};
-      const formInput = formEl.querySelector("input, select, textarea") || {};
+      let editButton = badge.querySelector(".editBadgeBtn") || {};
 
-      // Handle Edit button click
-      editButton.onclick = () => {
-        contentEl.classList.add("d-none");
-        formEl.classList.remove("d-none");
-        editButton.classList.add("d-none");
-        showUpdateButton();
-      };
+      if (!formEl || !contentEl) return;
 
-      // Show Update button if any input changes
-      formInput.oninput = () => showUpdateButton();
+      // Support multiple inputs (e.g., radio, checkbox, name pairs)
+      const formInputs = formEl.querySelectorAll("input, select, textarea");
 
-      // Display the value or switch to edit mode if empty
+      // Display content
       if (value !== undefined && value !== null && value !== "") {
-        editButton.classList.remove("d-none");
         contentEl.classList.remove("d-none");
-
-        if (key === "birthDate") {
-          const birthDate = new Date(value);
-          contentEl.innerText = `${months[birthDate.getMonth()]} ${birthDate.getDate()}`;
-          formInput.valueAsDate = birthDate;
-        } else if (Array.isArray(value)) {
-          contentEl.innerText = value.join(", ");
-          formInput.value = value.join(", ");
-        } else if (typeof value === "boolean") {
-          contentEl.innerText = value ? "Yes" : "No";
-          formInput.value = String(value); // Set as "true" or "false"
-        } else {
-          contentEl.innerText = value;
-          formInput.value = value;
-        }
-
-        formEl?.classList.add("d-none");
-      } else {
-        contentEl.innerText = "Not answered yet.";
-        editButton.classList?.add("d-none");
-        formEl?.classList?.remove("d-none");
+        editButton.classList.remove("d-none");
+        contentEl.innerText = value;
       }
     });
+    
+    // Special handling for birthDate
+    const birthDateBadge = document.querySelector("#birthDate");
+    if (birthDateBadge) {
+      const birthDate = userProfile.birthDate;
+      const contentEl = birthDateBadge.querySelector(".badge-content");
+      const formEl = birthDateBadge.querySelector(".badge-form");
+      const editButton = birthDateBadge.querySelector(".editBadgeBtn") || {};
+      if (birthDate) {
+        const date = new Date(birthDate.seconds * 1000 || birthDate);
+        const formattedDate = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        contentEl.innerText = formattedDate;
+        contentEl.classList.remove("d-none");
+        editButton.classList.remove("d-none");
+      } else {
+        contentEl.innerText = "Not answered yet.";
+        formEl.classList.remove("d-none");
+      }
+    }
 
     // Full Name special handling
     const fullName = `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim();
     const fullNameBadge = document.querySelector("#fullName");
-    const contentEl = fullNameBadge.querySelector(".badge-content");
+    let contentEl = fullNameBadge.querySelector(".badge-content");
     contentEl.innerText = fullName || "Not answered yet.";
 
     const firstNameInput = document.querySelector("#firstNameInput");

@@ -123,3 +123,26 @@ export function attachBoxPlot(canvasEl, data, options = {}){
         return null;
     }
 }
+
+function insertDataBadge(containerEl, cardId, title) {
+  if (!containerEl || !cardId || !canvasId || !title) return;
+
+  const card = document.createElement("div");
+  card.id = cardId;
+  card.className = "card data-badge col-md-6 shadow-sm";
+
+  card.innerHTML = `
+  <div class="btn-group w-100" role="group" aria-label="Chart Type Selection">
+    <button class="btn btn-primary active">Histogram</button>
+    <button class="btn btn-primary">Box Plot</button>
+    <button class="btn btn-primary">Measures of Center</button>
+    <button class="btn btn-primary">Measures of Spread</button>
+  </div>
+  <div class="card-body">
+      <h5 class="badge-header card-title">${title}</h5>
+      <canvas id="${cardId+"Canvas"}" class="badge-content card-text">Loading...</canvas>
+   </div>
+  `;
+
+  containerEl.appendChild(card);
+}
